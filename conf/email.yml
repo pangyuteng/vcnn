@@ -1,0 +1,11 @@
+user: 'blah'
+smtp:
+    - 'blah'
+send_to: ['blah@gmail.com']
+title: 'no title'
+content: >
+    No Content.
+append: []
+#append:
+#    - html: "out_report.html"
+#    - attachment: "out_report.html"
