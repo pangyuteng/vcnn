@@ -277,18 +277,18 @@ if __name__=='__main__':
         'lr_600k': hp.uniform('lr_600k', 0.0001, 0.01),
         'reg': hp.uniform('reg',0.0001,0.01),
         'momentum': hp.choice('momentum',[0.3,0.5,0.7,0.9]),
-        'max_epochs': hp.choice('max_epochs',[3]),
+        'max_epochs': hp.choice('max_epochs',[30]),
         'drop1p': hp.uniform('drop1p',0.1,0.9),
         'drop2p': hp.uniform('drop2p',0.1,0.9),
         'drop3p': hp.uniform('drop3p',0.1,0.9),
-        'num_filters': hp.choice('num_filters',[4,16,32]),
+        'num_filters': hp.choice('num_filters',[4,16,32,64]),
         'num_units': hp.choice('num_units',[16,128]),        
         'batches_per_chunk': hp.choice('batches_per_chunk',[32]),
         'batch_size': hp.choice('batch_size',[16]),
     }
 
     trials = Trials()
-    best = fmin(fn=f, space=fspace, algo=tpe.suggest, max_evals=3, trials=trials)
+    best = fmin(fn=f, space=fspace, algo=tpe.suggest, max_evals=100, trials=trials)
     print('best',best)    
     with open('trials.pkl','wb') as f:
         pickle.dump({'trials':trials,'best':best},f)
