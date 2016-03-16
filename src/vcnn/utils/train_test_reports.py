@@ -108,11 +108,23 @@ def main(args):
         page.write(sio.getvalue())
         
         if args.train_acc_fname is not None:
-            page.write('<h1>Train report</h1>')
+            page.write('<h2>training - confusion matrix</h2>')
             page.write('<p>sample size {}</p>'.format(train_scores['sample size']))
             page.write('<p>accuracy {}</p>'.format(train_scores['accuracy']))
+
             fig = pl.figure()
-            pl.matshow(train_scores['confusion matrix'])
+            ax = pl.subplot(111)
+            pl.imshow(train_scores['confusion matrix'],interpolation='nearest',cmap='gray')
+            ax.set_aspect(1)
+            conf_arr = train_scores['confusion matrix']
+            width, height = conf_arr.shape
+
+            for x in xrange(width):
+                for y in xrange(height):
+                    ax.annotate('{:1.2f}'.format(conf_arr[x][y]), xy=(y, x), 
+                                horizontalalignment='center',
+                                verticalalignment='center',color='red')
+            
             pl.colorbar()    
             pl.xlabel('Predicted')
             pl.ylabel('Ground')
@@ -122,10 +134,21 @@ def main(args):
         
         if args.test_acc_fname is not None:
             page.write('<h1>Test report</h1>')
+            page.write('<h2>testing - confusion matrix</h2>')
             page.write('<p>sample size {}</p>'.format(test_scores['sample size']))
             page.write('<p>accuracy {}</p>'.format(test_scores['accuracy']))
             fig = pl.figure()
-            pl.matshow(test_scores['confusion matrix'])
+            ax = pl.subplot(111)
+            pl.imshow(test_scores['confusion matrix'],interpolation='nearest',cmap='gray')
+            ax.set_aspect(1)
+            conf_arr = test_scores['confusion matrix']
+            width, height = conf_arr.shape
+
+            for x in xrange(width):
+                for y in xrange(height):
+                    ax.annotate('{:1.2f}'.format(conf_arr[x][y]), xy=(y, x), 
+                                horizontalalignment='center',
+                                verticalalignment='center',color='red')
             pl.colorbar()    
             pl.xlabel('Predicted')
             pl.ylabel('Ground')
