@@ -22,6 +22,7 @@ import lasagne
 import lasagne.layers
         
 from hyperopt import fmin, tpe, hp, STATUS_OK, Trials, STATUS_FAIL
+import pickle
 
 def make_training_functions(cfg, model):
     l_out = model['l_out']
@@ -128,7 +129,7 @@ def data_loader(cfg, fname):
         yield (2.0*xc - 1.0, np.asarray(yc, dtype=np.float32))
 
 class args:
-    training_fname = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),'data','simu','data_train.hdf5')    
+    training_fname = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),'data','kth_action','data_train.hdf5')    
     metrics_fname = 'metrics.jsonl'
     weights_fname = 'weights.npz'
 
@@ -146,7 +147,7 @@ def f(params):
                'learning_rate' : lr_schedule,
                'reg' : params['reg'],
                'momentum' : params['momentum'],
-               'dims' : (30,40,80),
+               'dims' : (30,40,160),
                'n_channels' : 1,
                'n_classes' : 10,
                'batches_per_chunk': params['batches_per_chunk'],
@@ -287,7 +288,7 @@ if __name__=='__main__':
     }
 
     trials = Trials()
-    best = fmin(fn=f, space=fspace, algo=tpe.suggest, max_evals=10, trials=trials)
+    best = fmin(fn=f, space=fspace, algo=tpe.suggest, max_evals=3, trials=trials)
     print('best',best)    
     with open('trials.pkl','wb') as f:
-        pickle.dump({'trials':trials,'best':best},f)        
+        pickle.dump({'trials':trials,'best':best},f)
