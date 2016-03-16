@@ -100,9 +100,9 @@ def main(args):
                 dix = ix
                 
                 iloc = np.round(np.array(xd.shape)/2)
-                imgXY = show_png(xd[:,:,iloc[2]]).get_html_embed_code()            
-                imgXZ = show_png(xd[:,iloc[1],:]).get_html_embed_code()
-                imgYZ = show_png(xd[iloc[0],:,:]).get_html_embed_code()                                    
+                imgXY = show_png(xd[:,:,iloc[2]],normalize=True).get_html_embed_code()            
+                imgXZ = show_png(xd[:,iloc[1],:],normalize=True).get_html_embed_code()
+                imgYZ = show_png(xd[iloc[0],:,:],normalize=True).get_html_embed_code()                                    
                 f.write('<div>')
                 f.write('<table><tr><td>')
                 f.write(imgXY)            
