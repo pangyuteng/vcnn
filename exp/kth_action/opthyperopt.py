@@ -36,6 +36,7 @@ counter = 1
 max_evals =500
 
 def f(params):
+    global counter
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s| %(message)s')
     logging.info('Metrics will be saved to {}'.format(args.metrics_fname))
     mlog = voxnet.metrics_logging.MetricsLogger(args.metrics_fname, reinitialize=True)
