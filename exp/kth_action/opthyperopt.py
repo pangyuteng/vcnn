@@ -28,7 +28,7 @@ from vcnn.utils import train, test
 
 class args:
     training_fname = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),'data','kth_action','data_train.hdf5')    
-    validate_fname = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),'data','kth_action','data_train.hdf5')        
+    validate_fname = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),'data','kth_action','data_valid.hdf5')        
     metrics_fname = 'metrics.jsonl'
     weights_fname = 'weights.npz'
 
