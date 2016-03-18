@@ -167,9 +167,9 @@ def f(params):
         logging.info('Loading weights from {}'.format(args.weights_fname))
         voxnet.checkpoints.load_weights(args.weights_fname, model['l_out'])
 
-        loader = (train.data_loader(cfg, args.validate_fname))
+        loader = (test.data_loader(cfg, args.validate_fname))
 
-        tfuncs, tvars = train.make_test_functions(cfg, model)
+        tfuncs, tvars = test.make_test_functions(cfg, model)
 
         yhat, ygnd = [], []
         for x_shared, y_shared in loader:
