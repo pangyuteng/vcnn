@@ -196,7 +196,7 @@ if __name__=='__main__':
         'lr_400k': hp.uniform('lr_400k', 0.0001, 0.01),
         'lr_600k': hp.uniform('lr_600k', 0.0001, 0.01),
         'reg': hp.uniform('reg',0.0001,0.5),
-        'momentum': hp.choice('momentum',0.01,0.99),
+        'momentum': hp.uniform('momentum',0.01,0.99),
         'max_epochs': hp.choice('max_epochs',[3,4]),#[450,100,500]),
         'drop1p': hp.uniform('drop1p',0.1,0.9),
         'drop2p': hp.uniform('drop2p',0.1,0.9),
