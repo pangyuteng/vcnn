@@ -222,14 +222,14 @@ if __name__=='__main__':
         'lr_600k': hp.uniform('lr_600k', 0.0001, 0.01),
         'reg': hp.uniform('reg',0.0001,0.5),
         'momentum': hp.uniform('momentum',0.01,0.99),
-        'max_epochs': hp.choice('max_epochs',[3,4]),#[450,100,500]),
+        'max_epochs': hp.choice('max_epochs',[40,80]), # [3,4]),#
         'drop1p': hp.uniform('drop1p',0.1,0.9),
         'drop2p': hp.uniform('drop2p',0.1,0.9),
         'drop3p': hp.uniform('drop3p',0.1,0.9),
         'dropAp': hp.uniform('dropAp',0.1,0.9),
-        'num_filters': hp.choice('num_filters',[16,32,64,128,256,512]),
-        'num_units': hp.choice('num_units',[16,32,64,128,256,512,1024]),       
-        'num_unitsA': hp.choice('num_unitsA',[16,32,64,128,256,]),
+        'num_filters': hp.choice('num_filters',[16,32,64]),
+        'num_units': hp.choice('num_units',[16,32,64,128]),       
+        'num_unitsA': hp.choice('num_unitsA',[16,32,64]),
         'add_dense': hp.choice('add_dense',[True,False]),
         
         
