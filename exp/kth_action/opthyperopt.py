@@ -32,11 +32,16 @@ class args:
     metrics_fname = 'metrics.jsonl'
     weights_fname = 'weights.npz'
 
+counter = 1
+max_evals =500
+
 def f(params):
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s| %(message)s')
     logging.info('Metrics will be saved to {}'.format(args.metrics_fname))
     mlog = voxnet.metrics_logging.MetricsLogger(args.metrics_fname, reinitialize=True)
     try:
+        print('#',counter,max_evals)
+        counter+=1
         for k in sorted(list(params.keys())):
             print(k,params[k])
         lr_schedule = { 0: params['lr_0'],
@@ -238,7 +243,7 @@ if __name__=='__main__':
     }
 
     trials = Trials()
-    best = fmin(fn=f, space=fspace, algo=tpe.suggest, max_evals=4, trials=trials)
+    best = fmin(fn=f, space=fspace, algo=tpe.suggest, max_evals=max_evals, trials=trials)
     print('best',best)    
     with open('trials.pkl','wb') as f:
         pickle.dump({'trials':trials,'best':best},f)
