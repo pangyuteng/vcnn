@@ -33,6 +33,9 @@ class args:
     weights_fname = 'weights.npz'
 
 def f(params):
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s| %(message)s')
+    logging.info('Metrics will be saved to {}'.format(args.metrics_fname))
+    mlog = voxnet.metrics_logging.MetricsLogger(args.metrics_fname, reinitialize=True)
     try:
         for k in sorted(list(params.keys())):
             print(k,params[k])
@@ -117,10 +120,7 @@ def f(params):
         
         model = {'l_in':l_in, 'l_out':l_fc2}
 
-        logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s| %(message)s')
-        logging.info('Metrics will be saved to {}'.format(args.metrics_fname))
-        mlog = voxnet.metrics_logging.MetricsLogger(args.metrics_fname, reinitialize=True)
-
+       
         logging.info('Compiling theano functions...')
         tfuncs, tvars = train.make_training_functions(cfg, model)
 
@@ -164,7 +164,7 @@ def f(params):
                                         {'itr': itr, 'ts': time.time()})
                                         
                                         
-        logger.info('Loading weights from {}'.format(args.weights_fname))
+        logging.info('Loading weights from {}'.format(args.weights_fname))
         voxnet.checkpoints.load_weights(args.weights_fname, model['l_out'])
 
         loader = (train.data_loader(cfg, args.validate_fname))
@@ -176,7 +176,8 @@ def f(params):
             pred = np.argmax(np.sum(tfuncs['dout'](x_shared), 0))
             yhat.append(pred)
             ygnd.append(y_shared[0])
-            #assert( np.max(y_shared)==np.min(y_shared)==y_shared[0] )
+            
+        assert(len(yhat)==len(ygnd))
 
         yhat = np.asarray(yhat, dtype=np.int)
         ygnd = np.asarray(ygnd, dtype=np.int)
