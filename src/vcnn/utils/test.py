@@ -64,8 +64,9 @@ def data_loader(cfg, fname):
             yield (2.0*xc - 1.0, np.asarray(yc, dtype=np.float32))
             yc = []
             xc.fill(0)
-    assert(len(yc)==0)
-
+    #assert(len(yc)==0)
+    if len(yc) > 0:
+        yield (2.0*xc - 1.0, np.asarray(yc, dtype=np.float32))
 
 def main(args):
     

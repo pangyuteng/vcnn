@@ -130,6 +130,7 @@ def data_loader(cfg, fname):
 
 class args:
     training_fname = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),'data','kth_action','data_train.hdf5')    
+    validate_fname = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),'data','kth_action','data_train.hdf5')        
     metrics_fname = 'metrics.jsonl'
     weights_fname = 'weights.npz'
 
@@ -275,20 +276,20 @@ if __name__=='__main__':
         'lr_60k': hp.uniform('lr_60k', 0.0001, 0.01),
         'lr_400k': hp.uniform('lr_400k', 0.0001, 0.01),
         'lr_600k': hp.uniform('lr_600k', 0.0001, 0.01),
-        'reg': hp.uniform('reg',0.0001,0.01),
-        'momentum': hp.choice('momentum',[0.3,0.5,0.7,0.9]),
-        'max_epochs': hp.choice('max_epochs',[30]),
+        'reg': hp.uniform('reg',0.0001,0.5),
+        'momentum': hp.choice('momentum',0.01,0.99),
+        'max_epochs': hp.choice('max_epochs',[50,100,500]),
         'drop1p': hp.uniform('drop1p',0.1,0.9),
         'drop2p': hp.uniform('drop2p',0.1,0.9),
         'drop3p': hp.uniform('drop3p',0.1,0.9),
-        'num_filters': hp.choice('num_filters',[4,16,32,64]),
-        'num_units': hp.choice('num_units',[16,128]),        
-        'batches_per_chunk': hp.choice('batches_per_chunk',[32]),
+        'num_filters': hp.choice('num_filters',[16,32,64,128,256,512]]),
+        'num_units': hp.choice('num_units',[16,32,64,128,256,512,1024]),        
+        'batches_per_chunk': hp.choice('batches_per_chunk',[32,64]),
         'batch_size': hp.choice('batch_size',[16]),
     }
 
     trials = Trials()
-    best = fmin(fn=f, space=fspace, algo=tpe.suggest, max_evals=100, trials=trials)
+    best = fmin(fn=f, space=fspace, algo=tpe.suggest, max_evals=2, trials=trials)
     print('best',best)    
     with open('trials.pkl','wb') as f:
         pickle.dump({'trials':trials,'best':best},f)
