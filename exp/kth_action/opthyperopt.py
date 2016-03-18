@@ -99,17 +99,41 @@ def f(params):
             p = params['drop2p'],
             name = 'drop2',
             )
-        l_fc1 = lasagne.layers.DenseLayer(
-            incoming = l_drop2,
-            num_units = params['num_units'],
-            W = lasagne.init.Normal(std=0.01),
-            name =  'fc1'
-            )
-        l_drop3 = lasagne.layers.DropoutLayer(
-            incoming = l_fc1,
-            p = params['drop3p'],
-            name = 'drop3',
-            )
+        if params['add_dense'] is False:
+            l_fc1 = lasagne.layers.DenseLayer(
+                incoming = l_drop2,
+                num_units = params['num_units'],
+                W = lasagne.init.Normal(std=0.01),
+                name =  'fc1'
+                )
+            l_drop3 = lasagne.layers.DropoutLayer(
+                incoming = l_fc1,
+                p = params['drop3p'],
+                name = 'drop3',
+                )        
+        else:
+            l_fc1 = lasagne.layers.DenseLayer(
+                incoming = l_drop2,
+                num_units = params['num_units'],
+                W = lasagne.init.Normal(std=0.01),
+                name =  'fc1'
+                )
+            l_drop_add = lasagne.layers.DropoutLayer(
+                incoming = l_fc1,
+                p = params['dropAp'],
+                name = 'dropA',
+                )
+            l_fc_add = lasagne.layers.DenseLayer(
+                incoming = l_drop_add,
+                num_units = params['num_unitsA'],
+                W = lasagne.init.Normal(std=0.01),
+                name =  'fcA'
+                )
+            l_drop3 = lasagne.layers.DropoutLayer(
+                incoming = l_fc1,
+                p = params['drop3p'],
+                name = 'drop3',
+                )                
         l_fc2 = lasagne.layers.DenseLayer(
             incoming = l_drop3,
             num_units = n_classes,
@@ -202,8 +226,13 @@ if __name__=='__main__':
         'drop1p': hp.uniform('drop1p',0.1,0.9),
         'drop2p': hp.uniform('drop2p',0.1,0.9),
         'drop3p': hp.uniform('drop3p',0.1,0.9),
+        'dropAp': hp.uniform('dropAp',0.1,0.9),
         'num_filters': hp.choice('num_filters',[16,32,64,128,256,512]),
-        'num_units': hp.choice('num_units',[16,32,64,128,256,512,1024]),        
+        'num_units': hp.choice('num_units',[16,32,64,128,256,512,1024]),       
+        'num_unitsA': hp.choice('num_unitsA',[16,32,64,128,256,]),
+        'add_dense': hp.choice('add_dense',[True,False]),
+        
+        
         'batches_per_chunk': hp.choice('batches_per_chunk',[32,64]),
         'batch_size': hp.choice('batch_size',[16]),
     }
