@@ -14,7 +14,7 @@ from vcnn.data import Simu
 
 # for training
 class train_params:    
-    config_path = os.path.join(folder_path,'sim_cfg.py')
+    config_path = os.path.join(folder_path,'cfg.py')
     weights_fname = os.path.join(folder_path,'weights.npz')
     training_fname = Simu.train_path
     metrics_fname = os.path.join(folder_path,'metrics.jsonl')
@@ -32,7 +32,7 @@ class test_params_testset:
     out_fname = os.path.join(folder_path,'out_test.npz')
     
 class viz_params:
-    module_name = 'simu'
+    cls_name = 'Simu'
     viz_out_fname = test_params_testset.out_fname
     viz_data_fname = test_params_testset.testing_fname
     viz_fname = os.path.join(folder_path,'viz_test.html')
@@ -53,17 +53,12 @@ mail_info = {
 }
 
 if __name__ == '__main__':
-    # Simu.generate()
-    # vcnn.utils.train.main(train_params)
-    # vcnn.utils.test.main(test_params_trainset)    
-    # vcnn.utils.test.main(test_params_testset)    
-    # vcnn.utils.train_test_reports.main(report_params)
+    Simu.generate()
+    vcnn.utils.train.main(train_params)
+    vcnn.utils.test.main(test_params_trainset)    
+    vcnn.utils.test.main(test_params_testset)    
+    vcnn.utils.train_test_reports.main(report_params)
     vcnn.utils.viz.main(viz_params)
     vcnn.utils.send_mail(mail_info)
-    
-    
-    
-    
-    
     
     

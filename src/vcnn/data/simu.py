@@ -25,7 +25,7 @@ def get_cube(id):
         cube[0:16,:,:] = 0.9
     elif id == 1:
         cube[:,:,16:-1] = 0.2
-    cube = ndimage.filters.gaussian_filter(cube,0.5)
+    cube = ndimage.filters.gaussian_filter(cube,[0.5,0.5,0.5])
     cube[cube>0.9] = 0.9
     
     return cube
@@ -93,6 +93,8 @@ def _generate(test_path, train_path):
     
 from vcnn.conf import DATA_ROOT    
 class Simu():
+    class_id_to_name = class_id_to_name
+    class_name_to_id = class_name_to_id
     data_path = os.path.join(DATA_ROOT,'simu')
     train_path = os.path.join(data_path,'data_train.hdf5')
     test_path = os.path.join(data_path,'data_test.hdf5')

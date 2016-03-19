@@ -10,16 +10,15 @@ lr_schedule = { 0: 0.001,
                 400000: 0.00005,
                 600000: 0.00001,
                 }
-
 cfg = {'batch_size' : 32,
        'learning_rate' : lr_schedule,
        'reg' : 0.001,
        'momentum' : 0.8,
-       'dims' : (30,40,160),
+       'dims' : (8,8,1),
        'n_channels' : 1,
-       'n_classes' : 6,
-       'batches_per_chunk': 64,
-       'max_epochs' : 4,
+       'n_classes' : 10,
+       'batches_per_chunk': 64, 
+       'max_epochs' : 200,
        'max_jitter_ij' : 2,
        'max_jitter_k' : 2,
        'n_rotations' : 1,
@@ -34,9 +33,9 @@ def get_model():
     l_conv1 = voxnet.layers.Conv3dMMLayer(
             input_layer = l_in,
             num_filters = 32,
-            filter_size = [5,5,5],
+            filter_size = [3,3,1],
             border_mode = 'valid',
-            strides = [2,2,2],
+            strides = [2,2,1],
             W = voxnet.init.Prelu(),
             nonlinearity = voxnet.activations.leaky_relu_001,
             name =  'conv1'
@@ -49,7 +48,7 @@ def get_model():
     l_conv2 = voxnet.layers.Conv3dMMLayer(
         input_layer = l_drop1,
         num_filters = 32,
-        filter_size = [3,3,3],
+        filter_size = [3,3,1],
         border_mode = 'valid',
         W = voxnet.init.Prelu(),
         nonlinearity = voxnet.activations.leaky_relu_01,
@@ -57,7 +56,7 @@ def get_model():
         )
     l_pool2 = voxnet.layers.MaxPool3dLayer(
         input_layer = l_conv2,
-        pool_shape = [2,2,2],
+        pool_shape = [2,2,1],
         name = 'pool2',
         )
     l_drop2 = lasagne.layers.DropoutLayer(

@@ -57,7 +57,7 @@ class show_png():
 def main(args):
     reader = hdf5.Reader(args.viz_data_fname,random=False)
     out = np.load(args.viz_out_fname)
-    cls = getattr(vcnndata, args.module_name)
+    cls = getattr(vcnndata, args.cls_name)
     
     yhat = out['yhat']
     ygnd = out['ygnd']

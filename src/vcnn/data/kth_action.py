@@ -111,6 +111,8 @@ def _generate(train_path,valid_path,test_path):
         write(records[data_type],fnames[data_type])
 
 class KthAction():
+    class_id_to_name = class_id_to_name
+    class_name_to_id = class_name_to_id
     data_path = os.path.join(DATA_ROOT,'kth_action')
     train_path = os.path.join(data_path,'data_train.hdf5')
     valid_path = os.path.join(data_path,'data_valid.hdf5')
