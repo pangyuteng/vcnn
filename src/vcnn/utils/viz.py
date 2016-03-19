@@ -13,6 +13,8 @@ from PIL import Image
 from io import BytesIO as StringIO
 from base64 import b64encode
 
+from .. import data as vcnndata
+
 class show_png():
     #https://github.com/Zulko/gizeh/blob/master/gizeh/gizeh.py 
     def __init__(self,data,type='L',format='png',normalize=False):
@@ -55,7 +57,7 @@ class show_png():
 def main(args):
     reader = hdf5.Reader(args.viz_data_fname,random=False)
     out = np.load(args.viz_out_fname)
-
+    cls = getattr(vcnndata, args.module_name)
     
     yhat = out['yhat']
     ygnd = out['ygnd']
@@ -111,8 +113,8 @@ def main(args):
                 f.write('</td>')
                 f.write('<td>')
                 f.write('<dl><dt>Instance:</dt><dd>{}</dd>'.format(yd))
-                f.write('<dt>Predicted label:</dt><dd>{}</dd>'.format(str(yhat[dix])))
-                f.write('<dt>True label:</dt><dd>{}</dd></dl>'.format(str(ygnd[dix])))
+                f.write('<dt>Predicted label:</dt><dd>{}</dd>'.format(cls.class_id_to_name[str(yhat[dix])]))
+                f.write('<dt>True label:</dt><dd>{}</dd></dl>'.format(cls.class_id_to_name[str(ygnd[dix])]))
                 f.write('</td></tr></table>')
                 f.write('</div>')
                 xds.append(xd)
@@ -123,6 +125,7 @@ def main(args):
 if __name__ == '__main__':
     logger.info('viz initiated...')
     parser = argparse.ArgumentParser()
+    parser.add_argument('cls_name', type=str)
     parser.add_argument('viz_out_fname', type=Path)
     parser.add_argument('viz_data_fname', type=Path)
     parser.add_argument('viz_fname', type=Path)

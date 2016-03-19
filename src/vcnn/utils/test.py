@@ -59,7 +59,7 @@ def data_loader(cfg, fname):
     for ix, (x, name) in enumerate(reader):
         cix = ix % chunk_size
         xc[cix] = x.astype(np.float32)
-        yc.append(int(name.split('.')[0])-1)
+        yc.append(int(name.split('.')[0]))
         if len(yc) == chunk_size:
             yield (2.0*xc - 1.0, np.asarray(yc, dtype=np.float32))
             yc = []

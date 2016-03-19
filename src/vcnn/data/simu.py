@@ -7,23 +7,34 @@ from path import Path
 import argparse
 
 from ..utils import hdf5
-
+from scipy import ndimage
 from sklearn.cross_validation import train_test_split
+
+
+#---------------
+class_id_to_name = {
+    "0": "ClassTrue",
+    "1": "ClassFalse",
+}
+class_name_to_id = { v : k for k, v in class_id_to_name.items() }
+class_names = set(class_id_to_name.values())
 dims = [32,32,32]
 def get_cube(id):
-    cube = np.random.rand(*dims)*0.3
-    if id == 1:
+    cube = np.random.rand(*dims)*0.3    
+    if id == 0:
         cube[0:16,:,:] = 0.9
-    elif id == 2:
+    elif id == 1:
         cube[:,:,16:-1] = 0.2
+    cube = ndimage.filters.gaussian_filter(cube,0.5)
     cube[cube>0.9] = 0.9
+    
     return cube
+#---------------
 
 def write(records,fname):    
     writer = hdf5.Writer(fname,tuple(dims))
-    rot = 99
     for id,x in records:        
-        name = '{:03d}.{:03d}.{:03d}'.format(id, id, rot)
+        name = '{:03d}.{:s}'.format(id, class_id_to_name[str(id)])
         arr = get_cube(id)                
         writer.add(arr, name)
     writer.close()
@@ -36,25 +47,25 @@ def _generate(test_path, train_path):
     
     np.random.seed(seed=42)
     test_size = 0.33
-    Y = np.random.randint(1,3,3000)
-    X = Y
+    Y = np.random.randint(0,2,300)
+    _ = Y
 
     logging.info('allocating train and testing set.')
-    x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=test_size, random_state=42)
+    x_train, x_test, y_train, y_test = train_test_split(_, Y, test_size=test_size, random_state=42)
 
 
     info = [
         {'train':[
             {'size':int(y_train.shape[0]) },
-            {'category sample':[{1:int(np.sum(y_train == 1))},
-                                {2:int(np.sum(y_train == 2))},
+            {'category sample':[{0:int(np.sum(y_train == 0))},
+                                {1:int(np.sum(y_train == 1))},
                                ]},
         ]
         },
         {'test':[
             {'size':int(y_test.shape[0]) },
-            {'category sample':[{1:int(np.sum(y_test == 1))},
-                                {2:int(np.sum(y_test == 2))},
+            {'category sample':[{0:int(np.sum(y_test == 0))},
+                                {1:int(np.sum(y_test == 1))},
                                ]},    
         ]
         }
@@ -96,13 +107,6 @@ class Simu():
         _generate(self.test_path,self.train_path)
         
         
-#---------------
-class_id_to_name = {
-    "1": "One",
-    "2": "Two",
-}
-class_name_to_id = { v : k for k, v in class_id_to_name.items() }
-class_names = set(class_id_to_name.values())
-#---------------
+
 if __name__ == '__main__':
     pass

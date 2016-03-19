@@ -10,19 +10,19 @@ lr_schedule = { 0: 0.001,
                 400000: 0.00005,
                 600000: 0.00001,
                 }
-cfg = {'batch_size' : 32, #8
+cfg = {'batch_size' : 32,
        'learning_rate' : lr_schedule,
        'reg' : 0.001,
        'momentum' : 0.8,
        'dims' : (32, 32, 32),
        'n_channels' : 1,
        'n_classes' : 2,
-       'batches_per_chunk': 64, #32
+       'batches_per_chunk': 64, 
        'max_epochs' : 4,
        'max_jitter_ij' : 2,
        'max_jitter_k' : 2,
        'n_rotations' : 1,
-       'checkpoint_every_nth' : 800,#4000,
+       'checkpoint_every_nth' : 800,
        }
 
 def get_model():

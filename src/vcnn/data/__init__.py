@@ -1,2 +1,3 @@
-from vcnn.data.simu import Simu
-from vcnn.data.kth_action import KthAction
+from .simu import Simu
+from .kth_action import KthAction
+#from .digits import Digits

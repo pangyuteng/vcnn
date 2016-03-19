@@ -32,6 +32,7 @@ class test_params_testset:
     out_fname = os.path.join(folder_path,'out_test.npz')
     
 class viz_params:
+    module_name = 'kth_action'
     viz_out_fname = test_params_testset.out_fname
     viz_data_fname = test_params_testset.testing_fname
     viz_fname = os.path.join(folder_path,'viz_test.html')
@@ -52,13 +53,13 @@ mail_info = {
 }
 
 if __name__ == '__main__':
-    KthAction.generate()
-    vcnn.utils.train.main(train_params)
-    vcnn.utils.test.main(test_params_trainset)    
-    vcnn.utils.test.main(test_params_testset)    
-    vcnn.utils.train_test_reports.main(report_params)
+    # KthAction.generate()
+    # vcnn.utils.train.main(train_params)
+    # vcnn.utils.test.main(test_params_trainset)    
+    # vcnn.utils.test.main(test_params_testset)    
+    # vcnn.utils.train_test_reports.main(report_params)
     vcnn.utils.viz.main(viz_params)
-    #vcnn.utils.send_mail(mail_info)
+    vcnn.utils.send_mail(mail_info)
     
     
     
