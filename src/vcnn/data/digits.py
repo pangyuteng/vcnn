@@ -34,9 +34,9 @@ dims = [8,8,1]
 
 def write(records,fname):    
     writer = hdf5.Writer(fname,tuple(dims))
-    for id,x in records:        
+    for id,arr in records:        
         name = '{:03d}.{:s}'.format(id, class_id_to_name[str(id)])              
-        writer.add(x, name)
+        writer.add(arr, name)
     writer.close()
 
 normalize = lambda x: 0.05+0.9*(x-np.min(x))/(np.max(x)-np.min(x))
@@ -51,21 +51,19 @@ def _generate(train_path, valid_path, test_path):
     test_size = 0.25    
     digits = datasets.load_digits()
     Y = digits.target.copy()
-    _ = Y
+    X = digits.images.reshape(digits.images.shape[0],digits.images.shape[1]*digits.images.shape[2])
     
     logging.info('allocating train and testing set.')    
-    _,_,y_train_valid,y_test = train_test_split(_, Y, test_size=test_size, random_state=42)
-    train_valid_Y = Y[y_train_valid]  
-    _ = train_valid_Y
-    _,_,y_train, y_valid = train_test_split(_,train_valid_Y, test_size=test_size, random_state=42)    
+    X_train_valid,x_test,Y_train_valid,y_test = train_test_split(X, Y, test_size=test_size, random_state=42)
+    x_train,x_valid, y_train, y_valid = train_test_split(X_train_valid,Y_train_valid, test_size=test_size, random_state=42)    
 
     records = {'train': [],'valid': [], 'test': []}
-    indices = {'train': y_train,'valid': y_valid, 'test': y_test}
+    ys = {'train': y_train,'valid': y_valid, 'test': y_test}
+    xs = {'train': x_train,'valid': x_valid, 'test': x_test}
     paths = {'train': train_path,'valid': valid_path, 'test': test_path}
     for data_type in sorted(list(records.keys())):
-        for ind in indices[data_type]:
-            y = Y[ind]
-            x = normalize(digits.images[ind,:,:]).reshape(dims)
+        for n,y in enumerate(ys[data_type]):
+            x = normalize(xs[data_type][n,:].reshape(dims))
             records[data_type].append((y,x))        
         # shuffle and save
         logging.info('Saving... %r ' % paths)

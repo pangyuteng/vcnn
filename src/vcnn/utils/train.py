@@ -12,7 +12,7 @@ import lasagne
 
 import voxnet
 
-from . import hdf5
+from . import hdf5,viz_weights
 
 logger = logging.getLogger('train')
 
@@ -124,7 +124,9 @@ def main(args):
     config_module = imp.load_source('config', args.config_path)
     cfg = config_module.cfg
     model = config_module.get_model()
-
+    dir_path = os.path.dirname(args.config_path)
+    weights_path = os.path.join(dir_path,'weights.npz')
+    
     logger.info('Metrics will be saved to {}'.format(args.metrics_fname))
     mlog = voxnet.metrics_logging.MetricsLogger(args.metrics_fname, reinitialize=True)
 
@@ -144,6 +146,7 @@ def main(args):
             
             logger.info(' '.join(str(_) for _ in [len(y_shared),'!',sum(y_shared==-1.),sum(y_shared==0.),sum(y_shared==1.)]))
             logger.info(' '.join(str(_) for _ in [x_shared[0].shape,np.min(x_shared[0]),np.max(x_shared[0])]))
+            pred = np.argmax(np.sum(tfuncs['dout'](x_shared), 0))
             
             tvars['y_shared'].set_value(y_shared, borrow=True)
             lvs,accs = [],[]
@@ -152,7 +155,7 @@ def main(args):
                 lvs.append(lv)
                 acc = 1.0-tfuncs['error_rate'](bi)
                 accs.append(acc)
-                itr += 1
+                itr += 1                
             loss, acc = float(np.mean(lvs)), float(np.mean(acc))
             logger.info('epoch: {}, itr: {}, loss: {}, acc: {}'.format(epoch, itr, loss, acc))
             mlog.log(epoch=epoch, itr=itr, loss=loss, acc=acc)
@@ -163,16 +166,20 @@ def main(args):
                 lr = np.float32(tvars['learning_rate'].get_value())
                 if not np.allclose(lr, new_lr):
                     logger.info('decreasing learning rate from {} to {}'.format(lr, new_lr))
-                    tvars['learning_rate'].set_value(np.float32(new_lr))
+                    tvars['learning_rate'].set_value(np.float32(new_lr))                    
             if itr-last_checkpoint_itr > cfg['checkpoint_every_nth']:
-                voxnet.checkpoints.save_weights('weights.npz', model['l_out'],
+                voxnet.checkpoints.save_weights(weights_path, model['l_out'],
                                                 {'itr': itr, 'ts': time.time()})
+                class viz_args:
+                    viz_weight_fname = weights_path
+                    viz_fname =  os.path.join(dir_path,'weights{:05d}.html'.format(epoch))
+                viz_weights.main(viz_args)                       
                 last_checkpoint_itr = itr
-    
+                
     logger.info('training done')
-    voxnet.checkpoints.save_weights('weights.npz', model['l_out'],
+    voxnet.checkpoints.save_weights(weights_path, model['l_out'],
                                     {'itr': itr, 'ts': time.time()})
-
+    
 if __name__=='__main__':
     logger.info('training initiated...')
     parser = argparse.ArgumentParser()
