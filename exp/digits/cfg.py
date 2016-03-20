@@ -18,7 +18,7 @@ cfg = {'batch_size' : 32,
        'n_channels' : 1,
        'n_classes' : 10,
        'batches_per_chunk': 128, 
-       'max_epochs' : 100,
+       'max_epochs' : 400,
        'max_jitter_ij' : 2,
        'max_jitter_k' : 2,
        'n_rotations' : 1,
@@ -47,7 +47,7 @@ def get_model():
         )        
     l_drop1 = lasagne.layers.DropoutLayer(
         incoming = l_pool1,
-        p = 0.2,
+        p = 0.4,
         name = 'drop1'
         )
     # l_conv2 = voxnet.layers.Conv3dMMLayer(
@@ -77,7 +77,7 @@ def get_model():
         )
     l_drop3 = lasagne.layers.DropoutLayer(
         incoming = l_fc1,
-        p = 0.2,
+        p = 0.4,
         name = 'drop3',
         )        
     l_fc2 = lasagne.layers.DenseLayer(
