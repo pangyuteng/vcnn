@@ -33,6 +33,7 @@ class test_params_testset:
     
 class viz_params:
     cls_name = 'Digits'
+    zoom = (4,4,1)
     viz_out_fname = test_params_testset.out_fname
     viz_data_fname = test_params_testset.testing_fname
     viz_fname = os.path.join(folder_path,'viz_test.html')

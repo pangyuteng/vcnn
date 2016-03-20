@@ -12,7 +12,7 @@ import numpy as np
 from PIL import Image
 from io import BytesIO as StringIO
 from base64 import b64encode
-
+from scipy import ndimage
 from .. import data as vcnndata
 
 class show_png():
@@ -100,7 +100,8 @@ def main(args):
         for ix, (xd, yd) in enumerate(reader):
             if ix in display_ix:
                 dix = ix
-                
+                if args.zoom:
+                    xd = ndimage.interpolation.zoom(xd,args.zoom)
                 iloc = np.round(np.array(xd.shape)/2)
                 imgXY = show_png(xd[:,:,iloc[2]],normalize=True).get_html_embed_code()            
                 imgXZ = show_png(xd[:,iloc[1],:],normalize=True).get_html_embed_code()
@@ -129,6 +130,7 @@ if __name__ == '__main__':
     parser.add_argument('viz_out_fname', type=Path)
     parser.add_argument('viz_data_fname', type=Path)
     parser.add_argument('viz_fname', type=Path)
+    parser.add_argument('zoom', type=Tuple)
     parser.add_argument('--num_instances', type=int, default=10)
     args = parser.parse_args()
     main(args)    

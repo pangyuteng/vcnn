@@ -5,6 +5,7 @@ import random
 import numpy as np
 from path import Path
 import argparse
+import numpy as np
 
 from ..utils import hdf5
 
@@ -61,9 +62,10 @@ def _generate(train_path, valid_path, test_path):
     records = {'train': [],'valid': [], 'test': []}
     indices = {'train': y_train,'valid': y_valid, 'test': y_test}
     paths = {'train': train_path,'valid': valid_path, 'test': test_path}
-    for data_type in sorted(list(records.keys())):            
-        for y in indices[data_type]:
-            x = normalize(digits.images[y,:,:]).reshape(dims)
+    for data_type in sorted(list(records.keys())):
+        for ind in indices[data_type]:
+            y = Y[ind]
+            x = normalize(digits.images[ind,:,:]).reshape(dims)
             records[data_type].append((y,x))        
         # shuffle and save
         logging.info('Saving... %r ' % paths)
