@@ -66,7 +66,7 @@ def get_model():
         )
     l_drop2 = lasagne.layers.DropoutLayer(
         incoming = l_pool2,
-        p = 0.2,
+        p = 0.3,
         name = 'drop2',
         )
     l_fc1 = lasagne.layers.DenseLayer(
@@ -77,7 +77,7 @@ def get_model():
         )
     l_drop3 = lasagne.layers.DropoutLayer(
         incoming = l_fc1,
-        p = 0.0,
+        p = 0.4,
         name = 'drop3',
         )        
     l_fc2 = lasagne.layers.DenseLayer(
