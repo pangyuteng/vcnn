@@ -101,7 +101,7 @@ http://deeplearning.net/software/theano/tutorial/using_gpu.html#testing-theano-w
     pip install h5py
     pip install theano
     pip install hyperopt
-	pip install pymongo
+    pip install pymongo
 	
     git clone git@github.com:pangyuteng/voxnet.git
     cd voxnet

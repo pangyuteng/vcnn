@@ -146,7 +146,6 @@ def main(args):
             
             logger.info(' '.join(str(_) for _ in [len(y_shared),'!',sum(y_shared==-1.),sum(y_shared==0.),sum(y_shared==1.)]))
             logger.info(' '.join(str(_) for _ in [x_shared[0].shape,np.min(x_shared[0]),np.max(x_shared[0])]))
-            pred = np.argmax(np.sum(tfuncs['dout'](x_shared), 0))
             
             tvars['y_shared'].set_value(y_shared, borrow=True)
             lvs,accs = [],[]

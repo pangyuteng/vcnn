@@ -131,7 +131,7 @@ if __name__ == '__main__':
     parser.add_argument('viz_out_fname', type=Path)
     parser.add_argument('viz_data_fname', type=Path)
     parser.add_argument('viz_fname', type=Path)
-    parser.add_argument('zoom', type=Tuple)
+    parser.add_argument('zoom', type=Tuple,default=None)
     parser.add_argument('--num_instances', type=int, default=10)
     args = parser.parse_args()
     main(args)    
