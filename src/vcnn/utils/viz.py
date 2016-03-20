@@ -25,6 +25,7 @@ class show_png():
             self.data = np.round(255*self.data).astype(np.uint8)
         
         self.img = Image.fromarray(self.data, type)
+        #self.img=self.img.resize((30,30),Image.NEAREST)
         self.format = 'png'
 
     def write_to_png(self, fileobject, y_origin="top"):
@@ -101,7 +102,7 @@ def main(args):
             if ix in display_ix:
                 dix = ix
                 if args.zoom:
-                    xd = ndimage.interpolation.zoom(xd,args.zoom)
+                    xd = ndimage.interpolation.zoom(xd,args.zoom,mode='nearest')
                 iloc = np.round(np.array(xd.shape)/2)
                 imgXY = show_png(xd[:,:,iloc[2]],normalize=True).get_html_embed_code()            
                 imgXZ = show_png(xd[:,iloc[1],:],normalize=True).get_html_embed_code()
