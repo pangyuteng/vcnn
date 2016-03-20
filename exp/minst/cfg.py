@@ -18,11 +18,11 @@ cfg = {'batch_size' : 32,
        'n_channels' : 1,
        'n_classes' : 10,
        'batches_per_chunk': 128, 
-       'max_epochs' : 400,
+       'max_epochs' : 40,
        'max_jitter_ij' : 2,
        'max_jitter_k' : 2,
        'n_rotations' : 1,
-       'checkpoint_every_nth' : 800,
+       'checkpoint_every_nth' : 2000,
        }
 
 def get_model():
