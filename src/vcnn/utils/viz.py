@@ -12,6 +12,8 @@ import numpy as np
 from PIL import Image
 from io import BytesIO as StringIO
 from base64 import b64encode
+from scipy import ndimage
+from .. import data as vcnndata
 
 class show_png():
     #https://github.com/Zulko/gizeh/blob/master/gizeh/gizeh.py 
@@ -23,6 +25,7 @@ class show_png():
             self.data = np.round(255*self.data).astype(np.uint8)
         
         self.img = Image.fromarray(self.data, type)
+        #self.img=self.img.resize((30,30),Image.NEAREST)
         self.format = 'png'
 
     def write_to_png(self, fileobject, y_origin="top"):
@@ -55,7 +58,7 @@ class show_png():
 def main(args):
     reader = hdf5.Reader(args.viz_data_fname,random=False)
     out = np.load(args.viz_out_fname)
-
+    cls = getattr(vcnndata, args.cls_name)
     
     yhat = out['yhat']
     ygnd = out['ygnd']
@@ -98,7 +101,8 @@ def main(args):
         for ix, (xd, yd) in enumerate(reader):
             if ix in display_ix:
                 dix = ix
-                
+                if args.zoom:
+                    xd = ndimage.interpolation.zoom(xd,args.zoom,mode='nearest')
                 iloc = np.round(np.array(xd.shape)/2)
                 imgXY = show_png(xd[:,:,iloc[2]],normalize=True).get_html_embed_code()            
                 imgXZ = show_png(xd[:,iloc[1],:],normalize=True).get_html_embed_code()
@@ -111,8 +115,8 @@ def main(args):
                 f.write('</td>')
                 f.write('<td>')
                 f.write('<dl><dt>Instance:</dt><dd>{}</dd>'.format(yd))
-                f.write('<dt>Predicted label:</dt><dd>{}</dd>'.format(str(yhat[dix])))
-                f.write('<dt>True label:</dt><dd>{}</dd></dl>'.format(str(ygnd[dix])))
+                f.write('<dt>Predicted label:</dt><dd>{}</dd>'.format(cls.class_id_to_name[str(yhat[dix])]))
+                f.write('<dt>True label:</dt><dd>{}</dd></dl>'.format(cls.class_id_to_name[str(ygnd[dix])]))
                 f.write('</td></tr></table>')
                 f.write('</div>')
                 xds.append(xd)
@@ -123,9 +127,11 @@ def main(args):
 if __name__ == '__main__':
     logger.info('viz initiated...')
     parser = argparse.ArgumentParser()
+    parser.add_argument('cls_name', type=str)
     parser.add_argument('viz_out_fname', type=Path)
     parser.add_argument('viz_data_fname', type=Path)
     parser.add_argument('viz_fname', type=Path)
+    parser.add_argument('zoom', type=Tuple,default=None)
     parser.add_argument('--num_instances', type=int, default=10)
     args = parser.parse_args()
     main(args)    

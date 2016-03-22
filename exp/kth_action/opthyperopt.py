@@ -28,15 +28,21 @@ from vcnn.utils import train, test
 
 class args:
     training_fname = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),'data','kth_action','data_train.hdf5')    
-    validate_fname = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),'data','kth_action','data_train.hdf5')        
+    validate_fname = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),'data','kth_action','data_valid.hdf5')        
     metrics_fname = 'metrics.jsonl'
     weights_fname = 'weights.npz'
 
+counter = 1
+max_evals =500
+
 def f(params):
+    global counter
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s| %(message)s')
     logging.info('Metrics will be saved to {}'.format(args.metrics_fname))
     mlog = voxnet.metrics_logging.MetricsLogger(args.metrics_fname, reinitialize=True)
     try:
+        print('#',counter,max_evals)
+        counter+=1
         for k in sorted(list(params.keys())):
             print(k,params[k])
         lr_schedule = { 0: params['lr_0'],
@@ -222,14 +228,14 @@ if __name__=='__main__':
         'lr_600k': hp.uniform('lr_600k', 0.0001, 0.01),
         'reg': hp.uniform('reg',0.0001,0.5),
         'momentum': hp.uniform('momentum',0.01,0.99),
-        'max_epochs': hp.choice('max_epochs',[30,50,100]),
+        'max_epochs': hp.choice('max_epochs',[40,80]), # [3,4]),#
         'drop1p': hp.uniform('drop1p',0.1,0.9),
         'drop2p': hp.uniform('drop2p',0.1,0.9),
         'drop3p': hp.uniform('drop3p',0.1,0.9),
         'dropAp': hp.uniform('dropAp',0.1,0.9),
-        'num_filters': hp.choice('num_filters',[16,32,64,128,256,512]),
-        'num_units': hp.choice('num_units',[16,32,64,128,256,512,1024]),       
-        'num_unitsA': hp.choice('num_unitsA',[16,32,64,128,256,]),
+        'num_filters': hp.choice('num_filters',[16,32,64]),
+        'num_units': hp.choice('num_units',[16,32,64,128]),       
+        'num_unitsA': hp.choice('num_unitsA',[16,32,64]),
         'add_dense': hp.choice('add_dense',[True,False]),
         
         
@@ -238,7 +244,7 @@ if __name__=='__main__':
     }
 
     trials = Trials()
-    best = fmin(fn=f, space=fspace, algo=tpe.suggest, max_evals=500, trials=trials)
+    best = fmin(fn=f, space=fspace, algo=tpe.suggest, max_evals=max_evals, trials=trials)
     print('best',best)    
     with open('trials.pkl','wb') as f:
         pickle.dump({'trials':trials,'best':best},f)

@@ -10,34 +10,34 @@ logger = custom_logger.new(folder_path,name=None)
 logger.info('initiated')
 
 # get data info
-from vcnn.data import KthAction
+from vcnn.data import Minst
 
 # for training
 class train_params:    
     config_path = os.path.join(folder_path,'cfg.py')
     weights_fname = os.path.join(folder_path,'weights.npz')
-    training_fname = KthAction.train_path
+    training_fname = Minst.train_path
     metrics_fname = os.path.join(folder_path,'metrics.jsonl')
 
 class test_params_trainset:
     config_path = train_params.config_path
     weights_fname = train_params.weights_fname
-    testing_fname = KthAction.train_path
+    testing_fname = Minst.train_path
     out_fname = os.path.join(folder_path,'out_train.npz')
 
 class test_params_testset:
     config_path = train_params.config_path
     weights_fname = train_params.weights_fname
-    testing_fname = KthAction.test_path
+    testing_fname = Minst.test_path
     out_fname = os.path.join(folder_path,'out_test.npz')
     
 class viz_params:
-    cls_name = 'KthAction'
-    zoom = None
+    cls_name = 'Minst'
+    zoom = (4,4,1)
     viz_out_fname = test_params_testset.out_fname
     viz_data_fname = test_params_testset.testing_fname
     viz_fname = os.path.join(folder_path,'viz_test.html')
-    num_instances = 40
+    num_instances = 20
     
 class report_params:
     metrics_fname = train_params.metrics_fname
@@ -54,11 +54,11 @@ mail_info = {
 }
 
 if __name__ == '__main__':
-    # KthAction.generate()
-    # vcnn.utils.train.main(train_params)
-    # vcnn.utils.test.main(test_params_trainset)    
-    # vcnn.utils.test.main(test_params_testset)    
-    # vcnn.utils.train_test_reports.main(report_params)
+    Minst.generate()
+    vcnn.utils.train.main(train_params)
+    vcnn.utils.test.main(test_params_trainset)    
+    vcnn.utils.test.main(test_params_testset)    
+    vcnn.utils.train_test_reports.main(report_params)
     vcnn.utils.viz.main(viz_params)
     vcnn.utils.send_mail(mail_info)
     

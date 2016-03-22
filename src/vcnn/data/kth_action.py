@@ -16,7 +16,7 @@ DESCR = '''
     
     mkdir data
     cd data
-    mkdir kth_action    
+    mkdir kth_action
     wget http://www.nada.kth.se/cvap/actions/walking.zip
     wget http://www.nada.kth.se/cvap/actions/jogging.zip
     wget http://www.nada.kth.se/cvap/actions/running.zip
@@ -34,12 +34,12 @@ DESCR = '''
     
 #---------------
 class_id_to_name = {
-    "1":'boxing',
-    "2":'handclapping',
-    "3":'handwaving',
-    "4":'jogging',
-    "5":'running',        
-    "6":'walking',}
+    "0":'boxing',
+    "1":'handclapping',
+    "2":'handwaving',
+    "3":'jogging',
+    "4":'running',        
+    "5":'walking',}
 class_name_to_id = { v : k for k, v in class_id_to_name.items() }
 class_names = set(class_id_to_name.values())
 dims = (30,40,160)
@@ -71,9 +71,8 @@ def avi2arr(fname,zoom=(0.25,0.25,0.5)):
 normalize = lambda x: 0.05+0.9*(x-np.min(x))/(np.max(x)-np.min(x))
 def write(records,fname):
     writer = hdf5.Writer(fname,tuple(dims))
-    rot = 99
     for name,vid_path in records:
-        name = '{:03d}.{:s}.{:03d}'.format(int(class_name_to_id[name]),name, rot)
+        name = '{:03d}.{:s}'.format(int(class_name_to_id[name]),name)
         vid = normalize(avi2arr(vid_path))
         vid_shape = list(vid.shape)
         arr = np.zeros(dims)
@@ -112,6 +111,8 @@ def _generate(train_path,valid_path,test_path):
         write(records[data_type],fnames[data_type])
 
 class KthAction():
+    class_id_to_name = class_id_to_name
+    class_name_to_id = class_name_to_id
     data_path = os.path.join(DATA_ROOT,'kth_action')
     train_path = os.path.join(data_path,'data_train.hdf5')
     valid_path = os.path.join(data_path,'data_valid.hdf5')
