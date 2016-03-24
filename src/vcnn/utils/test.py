@@ -85,9 +85,9 @@ def main(args):
     for x_shared, y_shared in loader:
         pred = np.argmax(np.sum(tfuncs['dout'](x_shared), 0))
         yhat.append(pred)
-        ygnd.append(y_shared[0])
+        ygnd.append(y_shared[0])        
         #assert( np.max(y_shared)==np.min(y_shared)==y_shared[0] )
-
+    
     yhat = np.asarray(yhat, dtype=np.int)
     ygnd = np.asarray(ygnd, dtype=np.int)
 

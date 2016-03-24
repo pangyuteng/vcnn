@@ -1,5 +1,8 @@
 import numpy as np
 
+def minmaxnorm(x):
+    return 0.05+0.9*(x-np.min(x))/(np.max(x)-np.min(x))
+    
 # Lungs L:-400 W:1500
 def chestnorm(x):
     x = (x+400.)/(1500.)

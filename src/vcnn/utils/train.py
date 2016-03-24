@@ -3,6 +3,7 @@ import argparse
 import imp
 import time
 import logging
+import warnings
 
 import numpy as np
 from path import Path
@@ -16,6 +17,62 @@ from . import hdf5,viz_weights
 
 logger = logging.getLogger('train')
 
+
+def make_valid_functions(cfg, model):
+    l_out = model['l_out']
+    batch_index = T.iscalar('batch_index')
+    # bct01
+    X = T.TensorType('float32', [False]*5)('X')
+    y = T.TensorType('int32', [False]*1)('y')
+    out_shape = lasagne.layers.get_output_shape(l_out)
+
+    batch_slice = slice(batch_index*cfg['batch_size'], (batch_index+1)*cfg['batch_size'])
+    out = lasagne.layers.get_output(l_out, X)
+    dout = lasagne.layers.get_output(l_out, X, deterministic=True)
+
+    params = lasagne.layers.get_all_params(l_out)
+    l2_norm = lasagne.regularization.regularize_network_params(l_out,
+            lasagne.regularization.l2)
+    if isinstance(cfg['learning_rate'], dict):
+        learning_rate = theano.shared(np.float32(cfg['learning_rate'][0]))
+    else:
+        learning_rate = theano.shared(np.float32(cfg['learning_rate']))
+
+    softmax_out = T.nnet.softmax( out )
+    loss = T.cast(T.mean(T.nnet.categorical_crossentropy(softmax_out, y)), 'float32')
+    pred = T.argmax( dout, axis=1 )
+    error_rate = T.cast( T.mean( T.neq(pred, y) ), 'float32' )
+    
+    X_shared = lasagne.utils.shared_empty(5, dtype='float32')
+    y_shared = lasagne.utils.shared_empty(1, dtype='float32')
+
+    dout_fn = theano.function([X], dout)
+    pred_fn = theano.function([X], pred)
+    
+    loss_fn = theano.function([batch_index], loss,
+            givens={
+            X: X_shared[batch_slice],
+            y: T.cast( y_shared[batch_slice], 'int32'),
+        })
+    error_rate_fn = theano.function([batch_index], error_rate, givens={
+            X: X_shared[batch_slice],
+            y: T.cast( y_shared[batch_slice], 'int32'),
+        })
+    tfuncs = {'loss':loss_fn,
+              'error_rate':error_rate_fn,
+              'dout' : dout_fn,
+              'pred' : pred_fn,
+            }
+    tvars = {'X' : X,
+             'y' : y,
+             'X_shared' : X_shared,
+             'y_shared' : y_shared,
+             'batch_slice' : batch_slice,
+             'batch_index' : batch_index,
+            }
+    return tfuncs, tvars
+    
+    
 def make_training_functions(cfg, model):
     l_out = model['l_out']
     batch_index = T.iscalar('batch_index')
@@ -100,11 +157,13 @@ def data_loader(cfg, fname):
     xc = np.zeros((chunk_size, cfg['n_channels'],)+dims, dtype=np.float32)
     reader = hdf5.Reader(fname,random=True)
     yc = []
+    all_is_good = False
     for ix, (x, name) in enumerate(reader):
         cix = ix % chunk_size
         xc[cix] = x.astype(np.float32)
-        yc.append(int(name.split('.')[0]))
+        yc.append(int(name.split('.')[0]))        
         if len(yc) == chunk_size:
+            all_is_good = True
             xc = jitter_chunk(xc, cfg)
             yield (2.0*xc - 1.0, np.asarray(yc, dtype=np.float32))
             yc = []
@@ -116,7 +175,13 @@ def data_loader(cfg, fname):
             xc = xc[:new_size]
             xc[len(yc):] = xc[:(new_size-len(yc))]
             yc = yc + yc[:(new_size-len(yc))]
-
+        
+        if len(yc) < xc.shape[0]:
+            xc = xc[:len(yc)]
+        assert(len(yc)==xc.shape[0])   
+        if all_is_good is False:
+            warnings.warn('increase data or reduce batches_per_chunk to avoid bug, train.py not working, all_is_good needs to be true')
+            
         xc = jitter_chunk(xc, cfg)
         yield (2.0*xc - 1.0, np.asarray(yc, dtype=np.float32))
 
@@ -128,10 +193,12 @@ def main(args):
     weights_path = os.path.join(dir_path,'weights.npz')
     
     logger.info('Metrics will be saved to {}'.format(args.metrics_fname))
-    mlog = voxnet.metrics_logging.MetricsLogger(args.metrics_fname, reinitialize=True)
-
+    mlog = voxnet.metrics_logging.MetricsLogger(args.metrics_fname, reinitialize=True)    
+    mlog_valid = voxnet.metrics_logging.MetricsLogger(args.valid_metrics_fname, reinitialize=True) 
+    
     logger.info('Compiling theano functions...')
     tfuncs, tvars = make_training_functions(cfg, model)
+    tfuncs_valid, tvars_valid = make_valid_functions(cfg, model)
     
     logger.info('Training...')
     itr = 0
@@ -139,8 +206,8 @@ def main(args):
     loader = (data_loader(cfg, args.training_fname))
     for epoch in xrange(cfg['max_epochs']):
         loader = (data_loader(cfg, args.training_fname))
-
         for x_shared, y_shared in loader:
+
             num_batches = len(x_shared)//cfg['batch_size']
             tvars['X_shared'].set_value(x_shared, borrow=True)
             
@@ -154,11 +221,28 @@ def main(args):
                 lvs.append(lv)
                 acc = 1.0-tfuncs['error_rate'](bi)
                 accs.append(acc)
-                itr += 1                
+                itr += 1
             loss, acc = float(np.mean(lvs)), float(np.mean(acc))
             logger.info('epoch: {}, itr: {}, loss: {}, acc: {}'.format(epoch, itr, loss, acc))
             mlog.log(epoch=epoch, itr=itr, loss=loss, acc=acc)
+            
 
+            # calculate loss with validation set
+            lvs_valid,accs_valid = [],[]
+            loader_valid = (data_loader(cfg, args.valid_fname))
+            for x_shared_valid, y_shared_valid in loader_valid:
+                num_batches_valid = len(x_shared_valid)//cfg['batch_size']
+                tvars_valid['X_shared'].set_value(x_shared_valid, borrow=True)
+                tvars_valid['y_shared'].set_value(y_shared_valid, borrow=True)                
+                for bi_valid in xrange(num_batches_valid):
+                    lv_valid = tfuncs_valid['loss'](bi_valid)
+                    lvs_valid.append(lv_valid)
+                    acc_valid = 1.0-tfuncs_valid['error_rate'](bi_valid)
+                    accs_valid.append(acc_valid)
+            loss_valid, acc_valid = float(np.mean(lvs_valid)), float(np.mean(acc_valid))
+            mlog_valid.log(epoch=epoch, itr=itr, loss=loss_valid, acc=acc_valid)
+            
+            
             if isinstance(cfg['learning_rate'], dict) and itr > 0:
                 keys = sorted(cfg['learning_rate'].keys())
                 new_lr = cfg['learning_rate'][keys[np.searchsorted(keys, itr)-1]]
@@ -183,7 +267,9 @@ if __name__=='__main__':
     logger.info('training initiated...')
     parser = argparse.ArgumentParser()
     parser.add_argument('config_path', type=Path, help='config .py file')
-    parser.add_argument('training_fname', type=Path, help='training .tar file')
-    parser.add_argument('--metrics-fname', type=Path, default='metrics.jsonl', help='name of metrics file')
+    parser.add_argument('training_fname', type=Path, help='training .hdf5 file')
+    parser.add_argument('valid_fname', type=Path, help='validation .hdf5 file')
+    parser.add_argument('--metrics_fname', type=Path, default='metrics.jsonl', help='name of metrics file')
+    parser.add_argument('--valid_metrics_fname', type=Path, default='metrics_valid.jsonl', help='name of metrics file')
     args = parser.parse_args()
     main(args)

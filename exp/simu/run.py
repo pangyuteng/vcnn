@@ -17,7 +17,9 @@ class train_params:
     config_path = os.path.join(folder_path,'cfg.py')
     weights_fname = os.path.join(folder_path,'weights.npz')
     training_fname = Simu.train_path
+    valid_fname = Simu.valid_path
     metrics_fname = os.path.join(folder_path,'metrics.jsonl')
+    valid_metrics_fname = os.path.join(folder_path,'metrics_valid.jsonl')
 
 class test_params_trainset:
     config_path = train_params.config_path
@@ -41,6 +43,7 @@ class viz_params:
     
 class report_params:
     metrics_fname = train_params.metrics_fname
+    valid_metrics_fname = None #train_params.valid_metrics_fname
     train_acc_fname = test_params_trainset.out_fname
     test_acc_fname = test_params_testset.out_fname
     out_fname = os.path.join(folder_path,'report.html')        

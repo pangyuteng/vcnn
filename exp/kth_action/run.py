@@ -17,7 +17,9 @@ class train_params:
     config_path = os.path.join(folder_path,'cfg.py')
     weights_fname = os.path.join(folder_path,'weights.npz')
     training_fname = KthAction.train_path
+    valid_fname = KthAction.valid_path
     metrics_fname = os.path.join(folder_path,'metrics.jsonl')
+    valid_metrics_fname = os.path.join(folder_path,'metrics_valid.jsonl')
 
 class test_params_trainset:
     config_path = train_params.config_path
@@ -41,6 +43,7 @@ class viz_params:
     
 class report_params:
     metrics_fname = train_params.metrics_fname
+    valid_metrics_fname = train_params.valid_metrics_fname
     train_acc_fname = test_params_trainset.out_fname
     test_acc_fname = test_params_testset.out_fname
     out_fname = os.path.join(folder_path,'report.html')        
@@ -54,11 +57,11 @@ mail_info = {
 }
 
 if __name__ == '__main__':
-    # KthAction.generate()
-    # vcnn.utils.train.main(train_params)
-    # vcnn.utils.test.main(test_params_trainset)    
-    # vcnn.utils.test.main(test_params_testset)    
-    # vcnn.utils.train_test_reports.main(report_params)
+    KthAction.generate()
+    vcnn.utils.train.main(train_params)
+    vcnn.utils.test.main(test_params_trainset)    
+    vcnn.utils.test.main(test_params_testset)    
+    vcnn.utils.train_test_reports.main(report_params)
     vcnn.utils.viz.main(viz_params)
     vcnn.utils.send_mail(mail_info)
     
