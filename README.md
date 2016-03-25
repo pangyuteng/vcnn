@@ -144,9 +144,21 @@ http://stackoverflow.com/questions/24744969/installing-h5py-on-an-ubuntu-server
 * train and test simulated data, training report will be sent to configured email.
 
 
-    cd exp\1_simu
+    cd \exp\simu
     python run.py
 
+* keep process running and exit terminal
+	
+	tmux	
+    command &
+    disown
+	tmux detach
+	
+	tmux list-sessions
+	tmux attach -t 0
+	
+http://askubuntu.com/questions/8653/how-to-keep-processes-running-after-ending-ssh-session
+http://unix.stackexchange.com/questions/89483/keeping-a-process-running-after-putty-or-terminal-has-been-closed
 
 # todo:
 create predict script
