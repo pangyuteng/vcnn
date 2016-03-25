@@ -162,4 +162,4 @@ http://unix.stackexchange.com/questions/89483/keeping-a-process-running-after-pu
 
 # todo:
 create predict script
-modify train/test/predict script to be a scikit like class?
+modify train/test/predict scripts to be a scikit like classes.
