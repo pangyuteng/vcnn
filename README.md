@@ -103,6 +103,8 @@ test if theano is running using gpu:
 http://deeplearning.net/software/theano/tutorial/using_gpu.html#testing-theano-with-gpu
 
 ### install other dependencies:
+    sudo apt-get install git
+    
     sudo apt-get install libblas-dev
     sudo apt-get install liblapack-dev
     sudo apt-get -y install libncurses-dev
@@ -128,6 +130,8 @@ http://deeplearning.net/software/theano/tutorial/using_gpu.html#testing-theano-w
     cd voxnet
     sudo pip install --editable .
     
+https://help.ubuntu.com/lts/serverguide/git.html
+
 http://www.saltycrane.com/blog/2010/02/how-install-pip-ubuntu/
 
 https://github.com/dimatura/voxnet
