@@ -20,6 +20,17 @@ http://docs.python-guide.org/en/latest/dev/virtualenvs/
     source venv/bin/activate
 
 ## dependencies
+# gpu drive (varies)
+
+sudo add-apt-repository ppa:graphics-drivers/ppa
+
+sudo apt-get update
+
+sudo apt-get install nvidia-352 nvidia-settings
+
+http://ubuntuhandbook.org/index.php/2015/06/install-nvidia-352-21-ubuntu-1404/
+
+
 
 ### cuda: 
 
