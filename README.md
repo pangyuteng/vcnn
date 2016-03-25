@@ -103,7 +103,7 @@ http://deeplearning.net/software/theano/tutorial/using_gpu.html#testing-theano-w
     pip install Cython
     sudo apt-get install libhdf5-dev
     pip install h5py
-    pip install theano
+    pip install sklearn
     pip install hyperopt
     pip install pymongo
 	
