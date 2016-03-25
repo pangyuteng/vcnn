@@ -26,10 +26,10 @@ sudo add-apt-repository ppa:graphics-drivers/ppa
 
 sudo apt-get update
 
-sudo apt-get install nvidia-352 nvidia-settings
+sudo apt-get install nvidia-352 nvidia-prime
 
 http://ubuntuhandbook.org/index.php/2015/06/install-nvidia-352-21-ubuntu-1404/
-
+http://askubuntu.com/questions/712067/unable-to-install-nvidia-driver-352
 
 
 ### cuda: 
