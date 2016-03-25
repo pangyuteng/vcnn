@@ -113,18 +113,18 @@ http://deeplearning.net/software/theano/tutorial/using_gpu.html#testing-theano-w
     
     sudo pip install https://github.com/Lasagne/Lasagne/archive/master.zip
     sudo pip install -r https://raw.githubusercontent.com/Lasagne/Lasagne/v0.1/requirements.txt
+    sudo apt-get install python-scipy
     sudo pip install path.py
+    sudo apt-get install libfreetype6-dev libpng-dev
+    sudo pip install matplotlib    
     sudo pip install seaborn
     sudo pip install Cython
     sudo apt-get install libhdf5-dev
     sudo pip install h5py
     sudo pip install sklearn
-    sudo sudo sudo pip install moviepy
+    sudo pip install moviepy
     sudo pip install hyperopt
     sudo pip install pymongo
-    sudo apt-get install python-pip
-    sudo pip install matplotlib
-    sudo apt-get install libfreetype6-dev libpng-dev
 	
     git clone git@github.com:pangyuteng/voxnet.git
     cd voxnet
@@ -141,6 +141,7 @@ https://github.com/pangyuteng/voxnet
 http://askubuntu.com/questions/350379/how-to-install-this-file-with-python
 
 http://stackoverflow.com/questions/24744969/installing-h5py-on-an-ubuntu-server
+http://stackoverflow.com/questions/21646179/how-to-install-python-matplotlib-in-ubuntu-12-04
 
 ### install vcnn
 
