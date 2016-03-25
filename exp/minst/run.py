@@ -65,9 +65,4 @@ if __name__ == '__main__':
     vcnn.utils.viz.main(viz_params)
     vcnn.utils.send_mail(mail_info)
     
-    
-    
-    
-    
-    
-    
+        

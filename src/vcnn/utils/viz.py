@@ -104,14 +104,20 @@ def main(args):
                 if args.zoom:
                     xd = ndimage.interpolation.zoom(xd,args.zoom,mode='nearest')
                 iloc = np.round(np.array(xd.shape)/2)
-                imgXY = show_png(xd[:,:,iloc[2]],normalize=True).get_html_embed_code()            
-                imgXZ = show_png(xd[:,iloc[1],:],normalize=True).get_html_embed_code()
-                imgYZ = show_png(xd[iloc[0],:,:],normalize=True).get_html_embed_code()                                    
+                if len(iloc) == 3:
+                    imgXY = show_png(xd[:,:,iloc[2]],normalize=True).get_html_embed_code()
+                    imgXZ = show_png(xd[:,iloc[1],:],normalize=True).get_html_embed_code()
+                    imgYZ = show_png(xd[iloc[0],:,:],normalize=True).get_html_embed_code()
+                elif len(iloc) ==2:
+                    imgXY = show_png(xd[:,:],normalize=True).get_html_embed_code()                                    
                 f.write('<div>')
                 f.write('<table><tr><td>')
-                f.write(imgXY)            
-                f.write(imgXZ)
-                f.write(imgYZ)
+                if len(iloc) == 3:                
+                    f.write(imgXY)
+                    f.write(imgXZ)
+                    f.write(imgYZ)
+                elif len(iloc) == 2:
+                    f.write(imgXY)
                 f.write('</td>')
                 f.write('<td>')
                 f.write('<dl><dt>Instance:</dt><dd>{}</dd>'.format(yd))

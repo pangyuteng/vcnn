@@ -19,10 +19,18 @@ logger = logging.getLogger('train')
 
 
 def make_valid_functions(cfg, model):
+
+    if len(cfg['dims'])==2:
+        _dim = 4
+    elif len(cfg['dims'])==3:
+        _dim = 5
+    else:
+        raise NotImplementedError()
+
     l_out = model['l_out']
     batch_index = T.iscalar('batch_index')
     # bct01
-    X = T.TensorType('float32', [False]*5)('X')
+    X = T.TensorType('float32', [False]*_dim)('X')
     y = T.TensorType('int32', [False]*1)('y')
     out_shape = lasagne.layers.get_output_shape(l_out)
 
@@ -43,7 +51,7 @@ def make_valid_functions(cfg, model):
     pred = T.argmax( dout, axis=1 )
     error_rate = T.cast( T.mean( T.neq(pred, y) ), 'float32' )
     
-    X_shared = lasagne.utils.shared_empty(5, dtype='float32')
+    X_shared = lasagne.utils.shared_empty(_dim, dtype='float32')
     y_shared = lasagne.utils.shared_empty(1, dtype='float32')
 
     dout_fn = theano.function([X], dout)
@@ -74,10 +82,19 @@ def make_valid_functions(cfg, model):
     
     
 def make_training_functions(cfg, model):
+
+    if len(cfg['dims'])==2:
+        _dim = 4
+    elif len(cfg['dims'])==3:
+        _dim = 5
+    else:
+        raise NotImplementedError()
+
     l_out = model['l_out']
     batch_index = T.iscalar('batch_index')
+
     # bct01
-    X = T.TensorType('float32', [False]*5)('X')
+    X = T.TensorType('float32', [False]*_dim)('X')
     y = T.TensorType('int32', [False]*1)('y')
     out_shape = lasagne.layers.get_output_shape(l_out)
     #log.info('output_shape = {}'.format(out_shape))
@@ -102,7 +119,7 @@ def make_training_functions(cfg, model):
     reg_loss = loss + cfg['reg']*l2_norm
     updates = lasagne.updates.momentum(reg_loss, params, learning_rate, cfg['momentum'])
 
-    X_shared = lasagne.utils.shared_empty(5, dtype='float32')
+    X_shared = lasagne.utils.shared_empty(_dim, dtype='float32')
     y_shared = lasagne.utils.shared_empty(1, dtype='float32')
 
     dout_fn = theano.function([X], dout)
@@ -135,15 +152,25 @@ def make_training_functions(cfg, model):
 
 def jitter_chunk(src, cfg):
     dst = src.copy()
-    if np.random.binomial(1, .2):
-        dst[:, :, ::-1, :, :] = dst
-    if np.random.binomial(1, .2):
-        dst[:, :, :, ::-1, :] = dst
-    max_ij = cfg['max_jitter_ij']
-    max_k = cfg['max_jitter_k']
-    shift_ijk = [np.random.random_integers(-max_ij, max_ij),
-                 np.random.random_integers(-max_ij, max_ij),
-                 np.random.random_integers(-max_k, max_k)]
+    if 'max_jitter_k' not in cfg.keys():
+        if np.random.binomial(1, .2):
+            dst[:, :, ::-1, :] = dst
+        if np.random.binomial(1, .2):
+            dst[:, :, :, ::-1] = dst
+        max_ij = cfg['max_jitter_ij']
+        shift_ijk = [np.random.random_integers(-max_ij, max_ij),
+                     np.random.random_integers(-max_ij, max_ij),
+                     ]
+    else:    
+        if np.random.binomial(1, .2):
+            dst[:, :, ::-1, :, :] = dst
+        if np.random.binomial(1, .2):
+            dst[:, :, :, ::-1, :] = dst
+        max_ij = cfg['max_jitter_ij']
+        max_k = cfg['max_jitter_k']
+        shift_ijk = [np.random.random_integers(-max_ij, max_ij),
+                     np.random.random_integers(-max_ij, max_ij),
+                     np.random.random_integers(-max_k, max_k)]
     for axis, shift in enumerate(shift_ijk):
         if shift != 0:
             # beware wraparound

@@ -88,12 +88,15 @@ def main(args):
         f.write('<table><tr><td>')
                
         for dix in range(out['conv1.W'].shape[0]):
-            xd = out['conv1.W'][dix,:,:,:,:]
+            xd = out['conv1.W'][dix]
             iloc = np.array(xd.shape)
-
-            for z in range(iloc[-1]):            
-                imgXY = show_png(xd[0,:,:,z],normalize=True).get_html_embed_code()                        
-                f.write(imgXY)                            
+            if len(iloc) ==4:
+                for z in range(iloc[-1]):            
+                    imgXY = show_png(xd[0,:,:,z],normalize=True).get_html_embed_code()                        
+                    f.write(imgXY)
+            else:
+                imgXY = show_png(xd[0,:,:],normalize=True).get_html_embed_code()
+                f.write(imgXY)
             f.write('{}<br>'.format(dix))
             
         f.write('</td></tr></table>')

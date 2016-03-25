@@ -18,10 +18,16 @@ from . import hdf5
 logger = logging.getLogger('test')
 
 def make_test_functions(cfg, model):
+    if len(cfg['dims'])==2:
+        _dim = 4
+    elif len(cfg['dims'])==3:
+        _dim = 5
+    else:
+        raise NotImplementedError()    
     l_out = model['l_out']
-    batch_index = T.iscalar('batch_index')
+    batch_index = T.iscalar('batch_index')    
     # bct01
-    X = T.TensorType('float32', [False]*5)('X')
+    X = T.TensorType('float32', [False]*_dim)('X')
     y = T.TensorType('int32', [False]*1)('y')
     out_shape = lasagne.layers.get_output_shape(l_out)
     #log.info('output_shape = {}'.format(out_shape))
@@ -35,7 +41,7 @@ def make_test_functions(cfg, model):
     softmax_out = T.nnet.softmax( out )
     pred = T.argmax( dout, axis=1 )
 
-    X_shared = lasagne.utils.shared_empty(5, dtype='float32')
+    X_shared = lasagne.utils.shared_empty(_dim, dtype='float32')
 
     dout_fn = theano.function([X], dout)
     pred_fn = theano.function([X], pred)

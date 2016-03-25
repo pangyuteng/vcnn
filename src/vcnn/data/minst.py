@@ -28,7 +28,6 @@ class_id_to_name = {
 
 class_name_to_id = { v : k for k, v in class_id_to_name.items() }
 class_names = set(class_id_to_name.values())
-dims = [28,28,1]
 #---------------
 
 import os
@@ -48,11 +47,11 @@ def read(digits, dataset="training", path="."):
     """
 
     if dataset is "train":
-        fname_img = os.path.join(path, 'train-images-idx3-ubyte')
-        fname_lbl = os.path.join(path, 'train-labels-idx1-ubyte')
+        fname_img = os.path.join(Minst.data_path, 'train-images-idx3-ubyte')
+        fname_lbl = os.path.join(Minst.data_path, 'train-labels-idx1-ubyte')
     elif dataset is "test":
-        fname_img = os.path.join(path, 't10k-images-idx3-ubyte')
-        fname_lbl = os.path.join(path, 't10k-labels-idx1-ubyte')
+        fname_img = os.path.join(Minst.data_path, 't10k-images-idx3-ubyte')
+        fname_lbl = os.path.join(Minst.data_path, 't10k-labels-idx1-ubyte')
     else:
         raise ValueError("dataset must be 'testing' or 'training'")
 
@@ -78,7 +77,7 @@ def read(digits, dataset="training", path="."):
 
     return images, labels
 
-def write(records,fname):    
+def write(records,fname,dims):    
     writer = hdf5.Writer(fname,tuple(dims))
     for id,arr in records:        
         name = '{:03d}.{:s}'.format(id, class_id_to_name[str(id)])              
@@ -87,7 +86,7 @@ def write(records,fname):
 
 normalize = lambda x: 0.05+0.9*(x-np.min(x))/(np.max(x)-np.min(x))
 
-def _generate(train_path, valid_path, test_path):
+def _generate(train_path, valid_path, test_path,dims):
     dir_path = os.path.dirname(test_path)
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
@@ -116,7 +115,7 @@ def _generate(train_path, valid_path, test_path):
         # shuffle and save
         logging.info('Saving... %r ' % paths)
         random.shuffle(records[data_type])
-        write(records[data_type],paths[data_type])
+        write(records[data_type],paths[data_type],dims)
 
 from vcnn.conf import DATA_ROOT
 class Minst():
@@ -126,7 +125,7 @@ class Minst():
     train_path = os.path.join(data_path,'data_train.hdf5')
     valid_path = os.path.join(data_path,'data_valid.hdf5')
     test_path = os.path.join(data_path,'data_test.hdf5')
-    
+    dims = [28,28,1]
     @classmethod
     def generate(self,force_gen=False):
         if force_gen is False:
@@ -136,8 +135,29 @@ class Minst():
         print('download and unzip to data/minst  http://yann.lecun.com/exdb/mnist/')
         logging.info('http://yann.lecun.com/exdb/mnist/')
         logging.info('generating data')
-        _generate(self.train_path,self.valid_path,self.test_path)        
+        _generate(self.train_path,self.valid_path,self.test_path,self.dims)
         
+
+class Minst2D():
+    class_id_to_name = class_id_to_name
+    class_name_to_id = class_name_to_id
+    data_path = os.path.join(DATA_ROOT,'minst2d')
+    train_path = os.path.join(data_path,'data_train.hdf5')
+    valid_path = os.path.join(data_path,'data_valid.hdf5')
+    test_path = os.path.join(data_path,'data_test.hdf5')
+    dims = [28,28]
+    @classmethod
+    def generate(self,force_gen=False):
+        if force_gen is False:
+            if os.path.exists(self.train_path) and os.path.exists(self.test_path) and os.path.exists(self.valid_path):
+                logging.info('data found,no need to generate')
+                return
+        print('download and unzip to data/minst  http://yann.lecun.com/exdb/mnist/')
+        logging.info('http://yann.lecun.com/exdb/mnist/')
+        logging.info('generating data')
+        _generate(self.train_path,self.valid_path,self.test_path,self.dims)        
+        
+
 if __name__ == '__main__':
     # Minst.generate()
     pass 
