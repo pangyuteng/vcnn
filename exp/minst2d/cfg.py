@@ -51,8 +51,9 @@ def get_model():
         )
     l_fc1 = lasagne.layers.DenseLayer(
         incoming = l_drop1,
-        num_units = 128,
+        num_units = 256,
         W = lasagne.init.GlorotUniform(),
+        nonlinearity = lasagne.nonlinearities.rectify,
         name =  'fc1'
         )
     l_drop3 = lasagne.layers.DropoutLayer(
@@ -64,7 +65,7 @@ def get_model():
         incoming = l_drop3,
         num_units = n_classes,
         W = lasagne.init.GlorotUniform(),
-        nonlinearity = None,
+        nonlinearity = lasagne.nonlinearities.softmax,
         name = 'fc2'
         )
     return {'l_in':l_in, 'l_out':l_fc2}
