@@ -106,25 +106,30 @@ http://deeplearning.net/software/theano/tutorial/using_gpu.html#testing-theano-w
     sudo apt-get install libblas-dev
     sudo apt-get install liblapack-dev
     sudo apt-get -y install libncurses-dev
-    pip install https://github.com/Lasagne/Lasagne/archive/master.zip
-    pip install -r https://raw.githubusercontent.com/Lasagne/Lasagne/v0.1/requirements.txt
-    pip install path.py
-    pip install seaborn
-    pip install Cython
+    sudo pip install --upgrade pip
+    sudo apt-get install python-pip python-dev build-essential 
+    
+    sudo pip install https://github.com/Lasagne/Lasagne/archive/master.zip
+    sudo pip install -r https://raw.githubusercontent.com/Lasagne/Lasagne/v0.1/requirements.txt
+    sudo pip install path.py
+    sudo pip install seaborn
+    sudo pip install Cython
     sudo apt-get install libhdf5-dev
-    pip install h5py
-    pip install sklearn
-    pip install moviepy
-    pip install hyperopt
-    pip install pymongo
+    sudo pip install h5py
+    sudo pip install sklearn
+    sudo sudo sudo pip install moviepy
+    sudo pip install hyperopt
+    sudo pip install pymongo
     sudo apt-get install python-pip
     sudo pip install matplotlib
     sudo apt-get install libfreetype6-dev libpng-dev
 	
     git clone git@github.com:pangyuteng/voxnet.git
     cd voxnet
-    pip install --editable .
+    sudo pip install --editable .
     
+http://www.saltycrane.com/blog/2010/02/how-install-pip-ubuntu/
+
 https://github.com/dimatura/voxnet
 
 https://github.com/pangyuteng/voxnet
