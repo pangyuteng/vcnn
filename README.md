@@ -107,6 +107,9 @@ http://deeplearning.net/software/theano/tutorial/using_gpu.html#testing-theano-w
     pip install moviepy
     pip install hyperopt
     pip install pymongo
+    sudo apt-get install python-pip
+    sudo pip install matplotlib
+    sudo apt-get install libfreetype6-dev libpng-dev
 	
     git clone git@github.com:pangyuteng/voxnet.git
     cd voxnet
