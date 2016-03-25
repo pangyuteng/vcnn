@@ -1,7 +1,7 @@
-user: 'no_reply@mednet.ucla.edu'
+user: 'sender@email'
 smtp:
-    - 'mail.cvib.ucla.edu'
-send_to: ['pangyuteng@gmail.com']
+    - 'sever.addr'
+send_to: ['to@email']
 title: 'no title'
 content: >
     No Content.
