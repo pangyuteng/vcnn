@@ -20,6 +20,17 @@ http://docs.python-guide.org/en/latest/dev/virtualenvs/
     source venv/bin/activate
 
 ## dependencies
+# gpu drive (varies)
+
+sudo add-apt-repository ppa:graphics-drivers/ppa
+
+sudo apt-get update
+
+sudo apt-get install nvidia-352 nvidia-settings
+
+http://ubuntuhandbook.org/index.php/2015/06/install-nvidia-352-21-ubuntu-1404/
+
+
 
 ### cuda: 
 
@@ -103,28 +114,37 @@ test if theano is running using gpu:
 http://deeplearning.net/software/theano/tutorial/using_gpu.html#testing-theano-with-gpu
 
 ### install other dependencies:
+    sudo apt-get install git
+    
     sudo apt-get install libblas-dev
     sudo apt-get install liblapack-dev
     sudo apt-get -y install libncurses-dev
-    pip install https://github.com/Lasagne/Lasagne/archive/master.zip
-    pip install -r https://raw.githubusercontent.com/Lasagne/Lasagne/v0.1/requirements.txt
-    pip install path.py
-    pip install seaborn
-    pip install Cython
-    sudo apt-get install libhdf5-dev
-    pip install h5py
-    pip install sklearn
-    pip install moviepy
-    pip install hyperopt
-    pip install pymongo
-    sudo apt-get install python-pip
-    sudo pip install matplotlib
+    sudo pip install --upgrade pip
+    sudo apt-get install python-pip python-dev build-essential 
+    
+    sudo pip install https://github.com/Lasagne/Lasagne/archive/master.zip
+    sudo pip install -r https://raw.githubusercontent.com/Lasagne/Lasagne/v0.1/requirements.txt
+    sudo apt-get install python-scipy
+    sudo pip install path.py
     sudo apt-get install libfreetype6-dev libpng-dev
+    sudo pip install matplotlib    
+    sudo pip install seaborn
+    sudo pip install Cython
+    sudo apt-get install libhdf5-dev
+    sudo pip install h5py
+    sudo pip install sklearn
+    sudo pip install moviepy
+    sudo pip install hyperopt
+    sudo pip install pymongo
 	
     git clone git@github.com:pangyuteng/voxnet.git
     cd voxnet
-    pip install --editable .
+    sudo pip install --editable .
     
+https://help.ubuntu.com/lts/serverguide/git.html
+
+http://www.saltycrane.com/blog/2010/02/how-install-pip-ubuntu/
+
 https://github.com/dimatura/voxnet
 
 https://github.com/pangyuteng/voxnet
@@ -132,10 +152,11 @@ https://github.com/pangyuteng/voxnet
 http://askubuntu.com/questions/350379/how-to-install-this-file-with-python
 
 http://stackoverflow.com/questions/24744969/installing-h5py-on-an-ubuntu-server
+http://stackoverflow.com/questions/21646179/how-to-install-python-matplotlib-in-ubuntu-12-04
 
 ### install vcnn
 
-    git clone git@gitlab.cvib.ucla.edu:pangyuteng/vcnn.git
+    git clone git@github.com:pangyuteng/vcnn.git
 
 ### configure and test vcnn
 
