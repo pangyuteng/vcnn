@@ -93,11 +93,15 @@ test if theano is running using gpu:
 http://deeplearning.net/software/theano/tutorial/using_gpu.html#testing-theano-with-gpu
 
 ### install other dependencies:
-
+    sudo apt-get install libblas-dev
+    sudo apt-get install liblapack-dev
+    sudo apt-get -y install libncurses-dev
     pip install https://github.com/Lasagne/Lasagne/archive/master.zip
+    pip install -r https://raw.githubusercontent.com/Lasagne/Lasagne/v0.1/requirements.txt
     pip install path.py
     pip install seaborn
     pip install Cython
+    sudo apt-get install libhdf5-dev
     pip install h5py
     pip install theano
     pip install hyperopt
@@ -111,6 +115,9 @@ https://github.com/dimatura/voxnet
 
 https://github.com/pangyuteng/voxnet
 
+http://askubuntu.com/questions/350379/how-to-install-this-file-with-python
+
+http://stackoverflow.com/questions/24744969/installing-h5py-on-an-ubuntu-server
 
 ### install vcnn
 
