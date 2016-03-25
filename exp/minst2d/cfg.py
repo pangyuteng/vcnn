@@ -46,32 +46,13 @@ def get_model():
         )        
     l_drop1 = lasagne.layers.DropoutLayer(
         incoming = l_pool1,
-        p = 0.4,
+        p = 0.5,
         name = 'drop1'
         )
-    l_conv2 = lasagne.layers.Conv2DLayer(
-        incoming = l_drop1,
-        num_filters = 32,
-        filter_size = [5,5],
-        stride = [1,1],        
-        W = lasagne.init.GlorotUniform(),
-        nonlinearity = lasagne.nonlinearities.rectify,
-        name =  'conv2'
-        )
-    l_pool2 = lasagne.layers.MaxPool2DLayer(
-        incoming = l_conv2,
-        pool_size = [2,2],
-        name = 'pool2',
-        )
-    l_drop2 = lasagne.layers.DropoutLayer(
-        incoming = l_pool2,
-        p = 0.5,
-        name = 'drop2',
-        )
     l_fc1 = lasagne.layers.DenseLayer(
-        incoming = l_drop2,
+        incoming = l_drop1,
         num_units = 128,
-        W = lasagne.init.Normal(std=0.01),
+        W = lasagne.init.GlorotUniform(),
         name =  'fc1'
         )
     l_drop3 = lasagne.layers.DropoutLayer(
@@ -82,8 +63,9 @@ def get_model():
     l_fc2 = lasagne.layers.DenseLayer(
         incoming = l_drop3,
         num_units = n_classes,
-        W = lasagne.init.Normal(std = 0.01),
+        W = lasagne.init.GlorotUniform(),
         nonlinearity = None,
         name = 'fc2'
         )
     return {'l_in':l_in, 'l_out':l_fc2}
+    # reference https://github.com/Lasagne/Lasagne/blob/master/examples/mnist.py
