@@ -145,7 +145,7 @@ http://stackoverflow.com/questions/21646179/how-to-install-python-matplotlib-in-
 
 ### install vcnn
 
-    git clone git@gitlab.cvib.ucla.edu:pangyuteng/vcnn.git
+    git clone git@github.com:pangyuteng/vcnn.git
 
 ### configure and test vcnn
 
