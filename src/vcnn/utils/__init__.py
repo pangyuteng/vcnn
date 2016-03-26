@@ -1,3 +1,4 @@
+from . import lsg
 from . import train
 from . import test
 from . import viz
@@ -9,6 +10,7 @@ import os
 import argparse
 from path import Path
 import logging
+
 logger = logging.getLogger('utils')
 
 
