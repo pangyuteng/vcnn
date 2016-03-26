@@ -86,6 +86,7 @@ def _commons(args):
 
     return cfg,network,train_fn,val_fn,pred_fn
 
+
 def train(args):
     
     logger.info('Loading data...')    
@@ -145,7 +146,7 @@ def test(args):
 
     cfg,network,train_fn,val_fn,pred_fn =_commons(args)
 
-    with np.load('weights.npz') as f:
+    with np.load(args.weights_fname) as f:
         param_values = [f['arr_%d' % i] for i in range(len(f.files))]        	
         lasagne.layers.set_all_param_values(network, param_values)    
 
@@ -175,3 +176,17 @@ def test(args):
     if args.out_fname is not None:
         logger.info('saving predictions to {}'.format(args.out_fname))
         np.savez_compressed(args.out_fname, yhat=yhat, ygnd=ygnd)
+
+        
+class Model():
+    def __init__(self,args):    
+        self.args = args
+        self.cfg,self.network,self.train_fn,self.val_fn,self.pred_fn =_commons(self.args)
+        self._load_weights()
+    def _load_weights(self):
+        with np.load(self.args.weights_fname) as f:
+            param_values = [f['arr_%d' % i] for i in range(len(f.files))]        	
+            lasagne.layers.set_all_param_values(self.network, param_values)    
+
+    def predict(self,inputs):
+        return np.squeeze(np.argmax(np.asarray(self.pred_fn(inputs)),axis=2).T)
