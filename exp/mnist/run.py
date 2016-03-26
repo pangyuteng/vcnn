@@ -4,6 +4,7 @@ import imp
 import __vcnn__
 import vcnn
 from vcnn.utils import custom_logger
+
 # logging
 folder_path = os.path.dirname(__file__)
 logger = custom_logger.new(folder_path,name=None)

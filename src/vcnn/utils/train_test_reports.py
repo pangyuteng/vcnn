@@ -85,10 +85,10 @@ def main(args):
         page.write('<p>{}</p>'.format(time.ctime()))
         page.write('<h2>Loss</h2>')
         fig = pl.figure()
-        test_recs['loss'].plot(label='raw test')
+        test_recs['loss'].plot(label='raw test',linewidth=0.5)
         pd.rolling_mean(test_recs['loss'], smoothing_window).plot(label='smoothed test')
         if args.valid_metrics_fname:
-            valid_recs['loss'].plot(label='raw valid')
+            valid_recs['loss'].plot(label='raw valid',linewidth=0.5)
             pd.rolling_mean(valid_recs['loss'], smoothing_window).plot(label='smoothed valid')
         
         pl.xlabel('Iter')
@@ -101,10 +101,10 @@ def main(args):
 
         page.write('<h2>Accuracy</h2>')
         fig = pl.figure()
-        test_recs['acc'].plot(label='raw test')
+        test_recs['acc'].plot(label='raw test',linewidth=0.5)
         pd.rolling_mean(test_recs['acc'], smoothing_window).plot(label='smoothed test')
         if args.valid_metrics_fname:
-            valid_recs['acc'].plot(label='raw valid')
+            valid_recs['acc'].plot(label='raw valid',linewidth=0.5)
             pd.rolling_mean(valid_recs['acc'], smoothing_window).plot(label='smoothed valid')
         
         pl.xlabel('Iter')
