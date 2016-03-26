@@ -21,8 +21,11 @@ from .lsg_viz import viz
 logger = logging.getLogger('lsg')
 
 
-def iterate_minibatches(inputs, targets, batchsize, shuffle=False):
+def iterate_minibatches(inputs, targets, batchsize, shuffle=False,convert=True):
     assert len(inputs) == len(targets)
+    if convert:
+        inputs = inputs.astype(np.float32)
+        targets = np.squeeze(targets.astype(np.int32))
     if shuffle:
         indices = np.arange(len(inputs))
         np.random.shuffle(indices)
@@ -30,7 +33,7 @@ def iterate_minibatches(inputs, targets, batchsize, shuffle=False):
         if shuffle:
             excerpt = indices[start_idx:start_idx + batchsize]
         else:
-            excerpt = slice(start_idx, start_idx + batchsize)
+            excerpt = slice(start_idx, start_idx + batchsize)     
         yield inputs[excerpt], targets[excerpt]
 
 
@@ -77,6 +80,8 @@ def _commons(args):
 
     # Compile a second function computing the validation loss and accuracy:
     val_fn = theano.function([input_var, target_var], [test_loss, test_acc])
+    
+    # third function for actual output.
     pred_fn = theano.function([input_var], [test_prediction])
 
     return cfg,network,train_fn,val_fn,pred_fn
