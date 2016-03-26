@@ -26,16 +26,15 @@ def get_recs(fname):
     stamps = [r['_stamp'] for r in recs]
     df = pd.DataFrame(recs, index=stamps)
     df['loss'] = df['loss'].astype(np.float)
-    #df = df.sort_index()
-
-    #loss = df['loss'].sort_index()
-    df_nonan = df.dropna(axis=0)
-    acc = df_nonan['acc'].sort_index()
-    acc.index = df_nonan['itr'].sort_index()
-
+    df['acc'] = df['acc'].astype(np.float)
+    df = df.dropna(axis=0)
+    y_axis = 'epoch'
+    acc = df['acc'].sort_index()
+    acc.index = df.sort_index()[y_axis]
     loss = df['loss'].sort_index()
-    loss.index = df.sort_index()['itr']
+    loss.index = df.sort_index()[y_axis]
     return {'acc':acc,'loss':loss}
+    
     
 def set_matplotlib_params():
     rcParams['axes.labelsize'] = 12
