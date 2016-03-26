@@ -17,7 +17,7 @@ import lasagne
 import voxnet
 from . import hdf5,viz_weights
 from .. import data as vcnndata
-
+from .lsg_viz import viz
 logger = logging.getLogger('lsg')
 
 

@@ -5,6 +5,9 @@ import __vcnn__
 import vcnn
 from vcnn.utils import custom_logger
 
+# get data info
+from vcnn.data import Mnist
+
 # logging
 folder_path = os.path.dirname(__file__)
 logger = custom_logger.new(folder_path,name=None)
@@ -32,7 +35,18 @@ class report_params:
     test_acc_fname = test_params.out_fname
     out_fname = os.path.join(folder_path,'report.html')        
 
+class viz_params:
+    data_cls = train_params.data_cls
+    data_type = 'test'
+    viz_out_fname = test_params.out_fname
+    out_fname = os.path.join(folder_path,'viz_'+data_type+'_set.html')
+    zoom = None 
+    num_instances = 20
+
+
+
 if __name__ == '__main__':
-    vcnn.utils.lsg.train(train_params)
-    vcnn.utils.lsg.test(test_params)
-    vcnn.utils.train_test_reports.main(report_params)
+    #vcnn.utils.lsg.train(train_params)
+    #vcnn.utils.lsg.test(test_params)
+    #vcnn.utils.train_test_reports.main(report_params)
+    vcnn.utils.lsg.viz(viz_params)

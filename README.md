@@ -184,3 +184,13 @@ http://unix.stackexchange.com/questions/89483/keeping-a-process-running-after-pu
 # todo:
 create predict script
 modify train/test/predict scripts to be a scikit like classes.
+
+
+# useful links:
+
+http://cs231n.github.io/
+http://rodrigob.github.io/are_we_there_yet/build
+http://lasagne.readthedocs.org/en/latest/user/tutorial.html
+https://github.com/ebenolson/pydata2015
+http://keras.io/datasets/
+https://github.com/sklearn-theano/sklearn-theano
