@@ -106,18 +106,18 @@ def train(args):
             itr+=train_batches
             train_mlog.log(epoch=epoch, itr=itr, loss=train_err/train_batches, acc=0.0)
 
-            # And a full pass over the validation data:
-            val_err = 0
-            val_acc = 0
-            val_batches = 0
-            for batch_val in iterate_minibatches(X_val, y_val, cfg['batch_size'], shuffle=False):
-                inputs_val, targets_val = batch_val
-                err, acc = val_fn(inputs_val, targets_val)
-                val_err += err
-                val_acc += acc
-                val_batches += 1
-            
-            valid_mlog.log(epoch=epoch, itr=itr, loss=val_err/val_batches, acc=val_acc/val_batches)
+        # And a full pass over the validation data:
+        val_err = 0
+        val_acc = 0
+        val_batches = 0
+        for batch_val in iterate_minibatches(X_val, y_val, cfg['batch_size'], shuffle=False):
+            inputs_val, targets_val = batch_val
+            err, acc = val_fn(inputs_val, targets_val)
+            val_err += err
+            val_acc += acc
+            val_batches += 1
+        
+        valid_mlog.log(epoch=epoch, itr=itr, loss=val_err/val_batches, acc=val_acc/val_batches)
 
         # Then we print the results for this epoch:
         logger.info("Epoch {} of {} took {:.3f}s".format(

@@ -77,7 +77,7 @@ def main(args):
     if args.valid_metrics_fname:
         valid_recs = get_recs(args.valid_metrics_fname)
 
-    smoothing_window = 32
+    smoothing_window = 15
 
     with open(args.out_fname, 'w') as page:
         page.write('<html><head></head><body>')
@@ -102,13 +102,12 @@ def main(args):
         page.write('<h2>Accuracy</h2>')
         fig = pl.figure()
         test_recs['acc'].plot(label='raw test',linewidth=0.5)
-        pd.rolling_mean(test_recs['acc'], smoothing_window).plot(label='smoothed test')
         if args.valid_metrics_fname:
-            valid_recs['acc'].plot(label='raw valid',linewidth=0.5)
-            pd.rolling_mean(valid_recs['acc'], smoothing_window).plot(label='smoothed valid')
+            valid_recs['acc'].plot(label='raw valid',linewidth=1)
         
         pl.xlabel('Iter')
         pl.ylabel('Accuracy')
+        pl.legend()        
         fig.tight_layout(pad=0.1)
         sio = StringIO.StringIO()
         pl.savefig(sio, format='svg')
