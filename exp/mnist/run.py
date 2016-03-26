@@ -15,7 +15,7 @@ logger.info('initiated')
 
 
 # for training
-class train_params:
+class train_params:    
     data_cls = 'Mnist'
     config_path = os.path.join(folder_path,'cfg.py')
     weights_fname = os.path.join(folder_path,'weights.npz')
@@ -43,10 +43,31 @@ class viz_params:
     zoom = None 
     num_instances = 20
 
+class params:
+    #common params
+    data_cls = 'Mnist'  # << defines dataset
+    config_path = os.path.join(folder_path,'cfg.py') # << defines model and training configuration
+    weights_fname = os.path.join(folder_path,'weights.npz')
+    #training params
+    train_metrics_fname = os.path.join(folder_path,'metrics_train.jsonl')
+    valid_metrics_fname = os.path.join(folder_path,'metrics_valid.jsonl')
+    #testing params
+    out_fname = os.path.join(folder_path,'out_test.npz')
 
 
 if __name__ == '__main__':
-    #vcnn.utils.lsg.train(train_params)
-    #vcnn.utils.lsg.test(test_params)
-    #vcnn.utils.train_test_reports.main(report_params)
+    vcnn.utils.lsg.train(train_params)
+    vcnn.utils.lsg.test(test_params)
+    vcnn.utils.train_test_reports.main(report_params)
     vcnn.utils.lsg.viz(viz_params)
+    
+    # TODOS:
+    #model = vcnn.utils.lsg.Model(params)
+    #model.train()
+    #model.test()
+    #model.predict(inputs)
+    #model.show_training_progress()
+    #model.show_test_results()    
+    #vcnn.utils.train_test_reports.main(report_params)
+    #vcnn.utils.lsg.viz(viz_params)
+
