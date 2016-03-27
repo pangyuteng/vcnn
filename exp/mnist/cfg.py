@@ -12,7 +12,7 @@ import lasagne
 
 
 cfg = {
-       'num_epochs' : 40,
+       'num_epochs' : 5,
        'learning_rate' : 0.01,
        'momentum' : 0.9,
        'input_T': T.tensor4, 

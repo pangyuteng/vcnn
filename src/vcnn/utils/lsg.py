@@ -87,13 +87,8 @@ def _commons(args):
     return cfg,network,train_fn,val_fn,pred_fn
 
 
-def train(args):
-    
-    logger.info('Loading data...')    
-    X_train, y_train, X_val, y_val, X_test, y_test = getattr(vcnndata,args.data_cls).get_dataset()
-
-    cfg,network,train_fn,val_fn,pred_fn =_commons(args)
-    
+def _train(args,cfg,network,train_fn,val_fn, X_train, y_train, X_val, y_val,):
+        
     # Finally, launch the training loop.
     logger.info("Start training...")
     train_mlog = voxnet.metrics_logging.MetricsLogger(args.train_metrics_fname, reinitialize=True) 
@@ -132,23 +127,10 @@ def train(args):
         logger.info("  validation loss:\t\t{:.6f}".format(val_err / val_batches))
         logger.info("  validation accuracy:\t\t{:.2f} %".format(
             val_acc / val_batches * 100))
+            
+        np.savez(args.weights_fname, *lasagne.layers.get_all_param_values(network))
         
-
-
-    	np.savez(args.weights_fname, *lasagne.layers.get_all_param_values(network))
-
-
-
-def test(args):
-
-    logger.info('Loading data...')
-    X_train, y_train, X_val, y_val, X_test, y_test = getattr(vcnndata,args.data_cls).get_dataset()
-
-    cfg,network,train_fn,val_fn,pred_fn =_commons(args)
-
-    with np.load(args.weights_fname) as f:
-        param_values = [f['arr_%d' % i] for i in range(len(f.files))]        	
-        lasagne.layers.set_all_param_values(network, param_values)    
+def _test(args,cfg,val_fn,pred_fn, X_test, y_test):
 
     logger.info("Start testing...")
     # After training, we compute and print the test error:
@@ -166,12 +148,10 @@ def test(args):
         ygnd.extend(targets)
         yhat.extend(np.squeeze(np.argmax(np.asarray(pred_fn(inputs)),axis=2).T))        
 
-
     logger.info("Final results:")
     logger.info("  test loss:\t\t\t{:.6f}".format(test_err / test_batches))
     logger.info("  test accuracy:\t\t{:.2f} %".format(
         test_acc / test_batches * 100))
-
 
     if args.out_fname is not None:
         logger.info('saving predictions to {}'.format(args.out_fname))
@@ -182,11 +162,24 @@ class Model():
     def __init__(self,args):    
         self.args = args
         self.cfg,self.network,self.train_fn,self.val_fn,self.pred_fn =_commons(self.args)
-        self._load_weights()
+        self._weights_loaded = False
+        
+    def fit(self,X_train, y_train, X_val, y_val):
+        self._weights_loaded = False
+        _train(self.args,self.cfg,self.network,self.train_fn,self.val_fn,X_train, y_train, X_val, y_val)        
+        
     def _load_weights(self):
         with np.load(self.args.weights_fname) as f:
             param_values = [f['arr_%d' % i] for i in range(len(f.files))]        	
             lasagne.layers.set_all_param_values(self.network, param_values)    
-
-    def predict(self,inputs):
+        self._weights_loaded = True
+        
+    def evaluate(self,X_test, y_test):
+        self._load_weights()
+        _test(self.args,self.cfg,self.val_fn,self.pred_fn, X_test, y_test)
+        
+    def predict(self,inputs,force_load=False):
+        if self._weights_loaded is False: self._load_weights()
         return np.squeeze(np.argmax(np.asarray(self.pred_fn(inputs)),axis=2).T)
+
+        

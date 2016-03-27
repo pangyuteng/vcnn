@@ -55,19 +55,9 @@ class show_png():
         self.write_to_png(data)
         return data.getvalue()
         
-def viz(args):
+def viz(args, X_viz, y_viz):
     
     out = np.load(args.viz_out_fname)
-
-    cls = getattr(vcnndata, args.data_cls)
-    X_train, y_train, X_val, y_val, X_test, y_test = cls.get_dataset()
-    if args.data_type == 'test':    	
-        reader = list(range(y_test.shape[0]))
-        X_designated = X_test
-        y_designated = y_test
-        print(X_designated.shape,y_designated.shape)
-    else:
-        raise NotImplementedError()
 
     yhat = out['yhat']
     ygnd = out['ygnd']
@@ -107,10 +97,10 @@ def viz(args):
         display_ix = np.random.randint(0, len(ygnd), args.num_instances)
         
         xds, yds = [], []
-        for ix in reader:            
+        for ix in list(range(y_viz.shape[0])):            
             if ix in display_ix:       
-                xd = X_designated[ix,:]
-                yd = y_designated[ix]
+                xd = X_viz[ix,:]
+                yd = y_viz[ix]
                 dix = ix
                 if args.zoom:
                     xd = ndimage.interpolation.zoom(xd,args.zoom,mode='nearest')
