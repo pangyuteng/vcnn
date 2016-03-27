@@ -21,14 +21,14 @@ from matplotlib import rcParams
 
 import voxnet
 
-def get_recs(fname):
+def get_recs(fname,y_axis = 'itr'):
     recs = list(voxnet.metrics_logging.read_records(fname))    
     stamps = [r['_stamp'] for r in recs]
     df = pd.DataFrame(recs, index=stamps)
     df['loss'] = df['loss'].astype(np.float)
     df['acc'] = df['acc'].astype(np.float)
     df = df.dropna(axis=0)
-    y_axis = 'epoch'
+    
     acc = df['acc'].sort_index()
     acc.index = df.sort_index()[y_axis]
     loss = df['loss'].sort_index()
@@ -71,10 +71,10 @@ def main(args):
             'confusion matrix': metrics.confusion_matrix(y_true, y_pred)/float(len(y_true)),
             'sample size':len(y_pred)
             }
-            
-    test_recs = get_recs(args.metrics_fname)
+    y_axis_name = 'itr'
+    test_recs = get_recs(args.metrics_fname,y_axis_name)
     if args.valid_metrics_fname:
-        valid_recs = get_recs(args.valid_metrics_fname)
+        valid_recs = get_recs(args.valid_metrics_fname,y_axis_name)
 
     smoothing_window = 15
 
@@ -84,14 +84,14 @@ def main(args):
         page.write('<p>{}</p>'.format(time.ctime()))
         page.write('<h2>Loss</h2>')
         fig = pl.figure()
-        test_recs['loss'].plot(label='raw test',linewidth=0.5)
-        pd.rolling_mean(test_recs['loss'], smoothing_window).plot(label='smoothed test')
+        test_recs['loss'].plot(label='test',linewidth=0.5)
+        #pd.rolling_mean(test_recs['loss'], smoothing_window).plot(label='smoothed test')
         if args.valid_metrics_fname:
-            valid_recs['loss'].plot(label='raw valid',linewidth=0.5)
-            pd.rolling_mean(valid_recs['loss'], smoothing_window).plot(label='smoothed valid')
+            valid_recs['loss'].plot(label='valid',linewidth=0.5)
+            #pd.rolling_mean(valid_recs['loss'], smoothing_window).plot(label='smoothed valid')
         
-        pl.xlabel('Iter')
-        pl.ylabel('Loss')
+        pl.xlabel(y_axis_name)
+        pl.ylabel('loss')
         pl.legend()
         fig.tight_layout(pad=0.1)
         sio = StringIO.StringIO()
@@ -100,12 +100,12 @@ def main(args):
 
         page.write('<h2>Accuracy</h2>')
         fig = pl.figure()
-        test_recs['acc'].plot(label='raw test',linewidth=0.5)
+        test_recs['acc'].plot(label='.',linewidth=0.5)
         if args.valid_metrics_fname:
-            valid_recs['acc'].plot(label='raw valid',linewidth=1)
+            valid_recs['acc'].plot(label='valid',linewidth=1)
         
-        pl.xlabel('Iter')
-        pl.ylabel('Accuracy')
+        pl.xlabel(y_axis_name)
+        pl.ylabel('accuracy')
         pl.legend()        
         fig.tight_layout(pad=0.1)
         sio = StringIO.StringIO()

@@ -56,7 +56,7 @@ class show_png():
         return data.getvalue()
         
 def viz(args, X_viz, y_viz):
-    
+    cls = getattr(vcnndata, args.data_cls)
     out = np.load(args.viz_out_fname)
 
     yhat = out['yhat']
