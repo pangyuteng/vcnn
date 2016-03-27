@@ -8,7 +8,7 @@ from vcnn.utils import custom_logger
 import vcnn.data as vcnndata
 
 # logging
-folder_path = os.path.dirname(__file__)
+folder_path = os.path.dirname(os.path.abspath(__file__))
 logger = custom_logger.new(folder_path,name=None)
 logger.info('initiated')
 
