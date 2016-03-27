@@ -56,12 +56,12 @@ class params:
 
 
 if __name__ == '__main__':
-    vcnn.utils.lsg.train(train_params)
+    #vcnn.utils.lsg.train(train_params)
     vcnn.utils.lsg.test(test_params)
     vcnn.utils.train_test_reports.main(report_params)
     vcnn.utils.lsg.viz(viz_params)
-    
-    # TODOS:
+
+    # TODOS: switch to keras... or build below...
     #model = vcnn.utils.lsg.Model(params)
     #model.train()
     #model.test()
