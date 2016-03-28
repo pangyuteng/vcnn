@@ -45,10 +45,10 @@ if __name__ == '__main__':
     
     cls = getattr(vcnndata, model_params.data_cls)
     X_train, y_train, X_val, y_val, X_test, y_test = cls.get_dataset()
-    
-    # model = vcnn.utils.lsg.Model(model_params)
-    # model.fit(X_train, y_train, X_val, y_val)
-    # model.evaluate(X_test, y_test)
+            
+    model = vcnn.utils.lsg.Model(model_params)
+    model.fit(X_train, y_train, X_val, y_val)
+    model.evaluate(X_test, y_test)
     
     vcnn.utils.train_test_reports.main(report_params)
     vcnn.utils.lsg.viz(viz_params, X_test, y_test)

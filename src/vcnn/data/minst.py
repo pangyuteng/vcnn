@@ -40,6 +40,13 @@ import struct
 import array
 import numpy
 
+def write(records,fname,dims):
+    writer = hdf5.Writer(fname,tuple(dims))
+    for id,arr in records:        
+        name = '{:03d}.{:s}'.format(id, class_id_to_name[str(id)])              
+        writer.add(arr, name)
+    writer.close()
+    
 def read(digits, dataset="training", path="."):
     """
 
@@ -82,13 +89,6 @@ def read(digits, dataset="training", path="."):
 
     return images, labels
 
-def write(records,fname,dims):    
-    writer = hdf5.Writer(fname,tuple(dims))
-    for id,arr in records:        
-        name = '{:03d}.{:s}'.format(id, class_id_to_name[str(id)])              
-        writer.add(arr, name)
-    writer.close()
-
 normalize = lambda x: 0.05+0.9*(x-np.min(x))/(np.max(x)-np.min(x))
 
 def _generate(train_path, valid_path, test_path,dims):
@@ -116,11 +116,11 @@ def _generate(train_path, valid_path, test_path,dims):
     for data_type in sorted(list(records.keys())):
         for n,y in enumerate(ys[data_type]):
             x = normalize(xs[data_type][n,:].reshape(dims))
-            records[data_type].append((y[0],x))        
+            records[data_type].append((y[0],x))
         # shuffle and save
         logging.info('Saving... %r ' % paths)
         random.shuffle(records[data_type])
-        write(records[data_type],paths[data_type],dims)
+        write(records[data_type],paths[data_type],dims,class_id_to_name)
 
 from vcnn.conf import DATA_ROOT
 class Minst():

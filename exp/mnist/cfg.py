@@ -17,13 +17,14 @@ cfg = {
        'momentum' : 0.9,
        'input_T': T.tensor4, 
        'batch_size' : 500,
-       'dims': (28,28),
+       'dims': (1, 28,28),
+       'num_classes': 10,
        }
        
 def get_model(input_var=None):
 
     # Input layer, as usual:
-    network = lasagne.layers.InputLayer(shape=(None, 1)+cfg['dims'],
+    network = lasagne.layers.InputLayer(shape=(None,)+cfg['dims'],
                                         input_var=input_var)
 
     # Convolutional layer with 32 kernels of size 5x5. Strided and padded
@@ -54,7 +55,7 @@ def get_model(input_var=None):
     # And, finally, the 10-unit output layer with 50% dropout on its inputs:
     network = lasagne.layers.DenseLayer(
             lasagne.layers.dropout(network, p=.5),
-            num_units=10,
+            num_units=cfg['num_classes'],
             nonlinearity=lasagne.nonlinearities.softmax)
 
     return network
