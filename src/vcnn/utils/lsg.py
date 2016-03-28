@@ -103,8 +103,9 @@ def _train(args,cfg,network,train_fn,val_fn, X_train, y_train, X_val, y_val,):
         for batch in iterate_minibatches(X_train, y_train, cfg['batch_size'], shuffle=True):
             inputs, targets = batch
             train_err += train_fn(inputs, targets)
+            print(train_err)
             train_batches += 1
-            itr+=train_batches
+            itr+=train_batches            
             train_mlog.log(epoch=epoch, itr=itr, loss=train_err/train_batches, acc=0.0)
 
         # And a full pass over the validation data:
@@ -114,10 +115,10 @@ def _train(args,cfg,network,train_fn,val_fn, X_train, y_train, X_val, y_val,):
         for batch_val in iterate_minibatches(X_val, y_val, cfg['batch_size'], shuffle=False):
             inputs_val, targets_val = batch_val
             err, acc = val_fn(inputs_val, targets_val)
+            print(err,acc)
             val_err += err
             val_acc += acc
-            val_batches += 1
-        
+            val_batches += 1            
         valid_mlog.log(epoch=epoch, itr=itr, loss=val_err/val_batches, acc=val_acc/val_batches)
 
         # Then we print the results for this epoch:
@@ -179,7 +180,11 @@ class Model():
         _test(self.args,self.cfg,self.val_fn,self.pred_fn, X_test, y_test)
         
     def predict(self,inputs,force_load=False):
-        if self._weights_loaded is False: self._load_weights()
+        if self._weights_loaded is False or force_load is True:
+            self._load_weights()        
         return np.squeeze(np.argmax(np.asarray(self.pred_fn(inputs)),axis=2).T)
-
-        
+        #^^^ # use flatten?
+    def predict_proba(self,inputs):
+        if self._weights_loaded is False or force_load is True:
+            self._load_weights()
+        raise NotImplementedError()

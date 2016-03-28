@@ -51,7 +51,9 @@ def get_file_paths(categories,root_path):
                 data_paths[category].append(file_path)
     return data_paths
 
-def avi2arr(fname,zoom=(0.5,1,0.75)):
+_s = 0.3
+_zoom = (0.5,1*_s,0.75*_s)
+def avi2arr(fname,zoom=_zoom):
     clip = VideoFileClip(fname)
     vid = np.array(list(clip.iter_frames()))[:,:,:,0]
     vid = ndimage.zoom(vid,zoom)
@@ -117,7 +119,8 @@ def _generate(train_path, valid_path, test_path,dims):
         logging.info('writing %s data %r' % (data_type,fnames[data_type]))
         for category in list(class_names):
             logging.info('category: %r' % category)
-            for ind in data_index[data_type]:
+            for n,ind in enumerate(data_index[data_type]):
+                print(n,len(data_index[data_type]))
                 vid_path = data_paths[category][ind]
                 vid = normalize(avi2arr(vid_path))
                 vid_shape = list(vid.shape)
@@ -127,7 +130,6 @@ def _generate(train_path, valid_path, test_path,dims):
                     x[0]=vid[:dims[1],:,:]
                 else:
                     x[0,:vid_shape[0],:,:]=vid
-                    
                 y = int(class_name_to_id[category])
                 store.add(x,y)
         store.close()
@@ -140,7 +142,7 @@ class Ktha():
     train_path = os.path.join(data_path,'data_train.hdf5')
     valid_path = os.path.join(data_path,'data_valid.hdf5')
     test_path = os.path.join(data_path,'data_test.hdf5')    
-    dims = (1,120,120,120)    
+    dims = (1,120,36,36)    
     @classmethod
     def generate(cls,force_gen=False):
         if force_gen is False:
@@ -156,16 +158,19 @@ class Ktha():
         cls.generate()
         store = h5py.File(cls.train_path,'r')
         X_train = store['X'][:]
+        X_train = 0.05+0.9*X_train
         y_train = store['Y'][:]        
         store.close()
         
         store = h5py.File(cls.valid_path,'r')
         X_val = store['X'][:]
+        X_val = 0.05+0.9*X_val
         y_val = store['Y'][:]
         store.close()
         
         store = h5py.File(cls.test_path,'r')
         X_test = store['X'][:]
+        X_test = 0.05+0.9*X_test
         y_test = store['Y'][:]
         store.close()
         return X_train, y_train, X_val, y_val, X_test, y_test
