@@ -18,7 +18,7 @@ from moviepy.editor import VideoFileClip
 from scipy import ndimage
 
 
-logger = logging.getLogger('mnist')
+logger = logging.getLogger('data.ktha')
 
 
 #---------------
@@ -32,7 +32,7 @@ class_id_to_name = {
 class_name_to_id = { v : k for k, v in class_id_to_name.items() }
 class_names = set(class_id_to_name.values())
 samples_per_group = 100
-normalize = lambda x: (x-np.min(x))/(np.max(x)-np.min(x))
+normalize = lambda x: 0.05+0.9*(x-np.min(x))/(np.max(x)-np.min(x))
 #---------------
 
 
@@ -158,19 +158,16 @@ class Ktha():
         cls.generate()
         store = h5py.File(cls.train_path,'r')
         X_train = store['X'][:]
-        X_train = 0.05+0.9*X_train
         y_train = store['Y'][:]        
         store.close()
         
         store = h5py.File(cls.valid_path,'r')
         X_val = store['X'][:]
-        X_val = 0.05+0.9*X_val
         y_val = store['Y'][:]
         store.close()
         
         store = h5py.File(cls.test_path,'r')
         X_test = store['X'][:]
-        X_test = 0.05+0.9*X_test
         y_test = store['Y'][:]
         store.close()
         return X_train, y_train, X_val, y_val, X_test, y_test
