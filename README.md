@@ -1,12 +1,13 @@
 # cnn infrastructure
 
-\src\vcnn: code
-\src\vcnn\utils: helper methods
-\src\vcnn\conf.py: vcnn related configuration
-\exp: experiments, messy code
-\bin: entry points, script for pulling data
-\data: folder for storing training and testing data, not to be committed?
-\conf\model: folder for pre trained weights is cnn is trained.
+# directory description
+    \src\vcnn: code
+    \src\vcnn\utils: helper methods
+    \src\vcnn\conf.py: vcnn related configuration
+    \exp: experiments, messy code
+    \bin: entry points, script for pulling data
+    \data: folder for storing training and testing data, not to be committed?
+    \conf\model: folder for pre trained weights is cnn is trained.
 
 
 
@@ -60,7 +61,42 @@ http://kawahara.ca/theano-how-to-get-the-gpu-to-work/
 
 https://groups.google.com/forum/#!topic/theano-users/KD7AcDMajFo
 
-### theano:
+
+### install dependencies:
+	    
+	pip install -r https://raw.githubusercontent.com/Lasagne/Lasagne/v0.1/requirements.txt
+	pip install Lasagne==0.1
+		# pip install https://github.com/Lasagne/Lasagne/archive/master.zip
+    pip install path.py
+    pip install seaborn
+    pip install Cython
+    pip install h5py
+    pip install theano
+    pip install hyperopt
+    pip install pymongo
+	
+    git clone git@github.com:pangyuteng/voxnet.git
+    cd voxnet
+    pip install --editable .
+
+ref.
+
+theano
+
+http://deeplearning.net/software/theano/install.html
+
+lasagne
+
+http://lasagne.readthedocs.org/en/latest/user/installation.html
+
+voxnet
+
+https://github.com/dimatura/voxnet
+https://github.com/pangyuteng/voxnet
+
+
+
+### setup theano:
 locate theano configuration file `.theanorc`.
 
     cd ~
@@ -73,7 +109,7 @@ updated `.theanorc` content, `pico .theanorc`:
     device = gpu
 
     [lib]
-    cnmem = 0.5
+    cnmem = 0
 
     [cuda] 
     root=/usr/local/cuda-7.5
